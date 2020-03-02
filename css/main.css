@@ -1,5 +1,4 @@
 canvas{
     background: #eee; display: block; margin: 0 auto;
-    width: 50vw;
-    height: 50vh;
+    height: 100%;
 }
