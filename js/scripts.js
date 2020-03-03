@@ -10,6 +10,7 @@ formElement.addEventListener('submit', function(event){
     var city = document.getElementById('city');
 
     var tableElement = document.getElementById('table-id').getElementsByTagName('tbody')[0];
+    
     var tableRow = tableElement.insertRow();
     var tableData1 = tableRow.insertCell();
     tableData1.textContent = name.value;
@@ -19,6 +20,7 @@ formElement.addEventListener('submit', function(event){
     tableData3.textContent = school_class.value;
     var tableData4 = tableRow.insertCell();
     tableData4.textContent = city.value;
+
 
 
 });
