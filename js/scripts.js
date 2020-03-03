@@ -1,12 +1,13 @@
 var formElement = document.getElementById('form-id');
 
-formElement.addEventListener('submit', function(event){
+formElement.addEventListener('submit', function(event)
+{
 
     event.preventDefault();
 
     var name = document.getElementById('name');
     var age = document.getElementById('age');
-    var school_class = document.getElementById('class');
+    var school_class = document.getElementById('school_class');
     var city = document.getElementById('city');
 
     var tableElement = document.getElementById('table-id').getElementsByTagName('tbody')[0];
@@ -23,4 +24,5 @@ formElement.addEventListener('submit', function(event){
 
 
 
-});
+}
+);
