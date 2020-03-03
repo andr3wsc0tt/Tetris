@@ -1,56 +1,24 @@
-// var x = document.getElementById("test-id");
-// x.textContent = "HEY YOU TOO!";
-// console.log(x);
+var formElement = document.getElementById('form-id');
 
-// var y = document.querySelector(".test-class");
-// y.textContent += ", NOT!!";
-// console.log(y);
+formElement.addEventListener('submit', function(event){
 
-// var newElement = document.createElement('p');
-// newElement.textContent = 'This is a new Element BROOOOOO!';
-// document.body.appendChild( newElement );
-
-// var newElement2 = document.createElement('p');
-// newElement2.textContent = "Second new paragraph";
-// newElement2.style.color = 'darkgrey';
-
-// document.body.appendChild(newElement2);
-
-// var newElement3 = document.createElement('A');
-// newElement3.textContent = "Click Me, Click Me!!";
-// newElement3.href = "./index.html";
-// newElement3.title = "Return to Homepage";
-// newElement3.style.color = "red";
-
-// newElement2.appendChild(newElement3);
-
-var calculatorForm = document.getElementById("calculator");
-
-calculatorForm.addEventListener("submit", function(event){
     event.preventDefault();
-    var operatorInput = document.getElementById('operator');
-    var add1 = document.getElementById("num1");
-    var add2 = document.getElementById("num2");
-    var answer = document.getElementById("answer");
 
-    switch (operatorInput.value)
-    {
-        case "add":
-            answer.textContent += Number(add1.value)+Number(add2.value);
-            break;
-        case "subtract":
-            answer.textContent += Number(add1.value)-Number(add2.value);
-            break;
-        case "divide":
-            answer.textContent += Number(add1.value)/Number(add2.value);
-            break;
-        case "multiply":
-            answer.textContent += Number(add1.value)*Number(add2.value);
-            break;
-        default:
-            break;
-    }  
+    var name = document.getElementById('name');
+    var age = document.getElementById('age');
+    var school_class = document.getElementById('class');
+    var city = document.getElementById('city');
+
+    var tableElement = document.getElementById('table-id').getElementsByTagName('tbody')[0];
+    var tableRow = tableElement.insertRow();
+    var tableData1 = tableRow.insertCell();
+    tableData1.textContent = name.value;
+    var tableData2 = tableRow.insertCell();
+    tableData2.textContent = age.value;
+    var tableData3 = tableRow.insertCell();
+    tableData3.textContent = school_class.value;
+    var tableData4 = tableRow.insertCell();
+    tableData4.textContent = city.value;
+
+
 });
-
-
-

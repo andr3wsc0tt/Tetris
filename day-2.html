@@ -9,34 +9,44 @@
     <script type="text/javascript" src="./js/scripts.js" defer></script>
 </head>
 <body>
-    <!-- <h1 id = "test-id">HEY YOU</h1>
-    <h2 class= "test-class">You've Got Class</h2> -->
-
-    <form action ="#" method="get" id="calculator">
-        <label for="operator">
-            Select an Operator:
-            <select name="operator" id="operator">
-                <option value="add">Add</option>
-                <option value="subtract">Subtract</option>
-                <option value="divide">Divide</option>
-                <option value="multiply">Multiply</option>
-            </select>
+    <form id="form-id" method = "get" action="#">
+        <label for="name">
+            Name
+            <input type="text" id="name" name="name">
         </label>
-        <label for="num1">
-            Enter First Number:
-            <input type="number" name="num1" id="num1">
+        <label for="age">
+            Age
+            <input type="text" id="age" name="age">
         </label>
-        <label for="num2">
-            Enter Second Number:
-            <input type="number" name="num2" id="num2">
+        <label for="class">
+            Class
+            <input type="text" id="class" name="class">
         </label>
-        <button type="submit" id="run-calc">
-            Run Calculation
-        </button>
-
-        <label for="answer">
-             <p name="answer" id="answer">Answer: </p>
+        <label for="city">
+            City
+            <input type="text" id="city" name="city">
         </label>
+        <input type="submit" value="submit">
+        
     </form>
+    <h1> Table </h1>
+    <table id ="table-id">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Class</th>
+                <th>City</th>
+            </tr>
+            <tbody id = "table-body">
+                <tr>
+                    <td>Bob</td>
+                    <td>25</td>
+                    <td>Programming</td>
+                    <td>Edmonton</td>
+                </tr>
+            </tbody>
+        </thead>
+    </table>
 </body>
 </html>
