@@ -32,27 +32,24 @@ calculatorForm.addEventListener("submit", function(event){
     var add1 = document.getElementById("num1");
     var add2 = document.getElementById("num2");
     var answer = document.getElementById("answer");
-    
-    if (operatorInput.value == "add")
+
+    switch (operatorInput.value)
     {
-        answer.textContent += Number(add1.value)+Number(add2.value);
-    }
-    else if (operatorInput.value == "subtract")
-    {
-        answer.textContent += Number(add1.value)-Number(add2.value);
-    }
-    else if (operatorInput.value == "divide")
-    {
-        answer.textContent += Number(add1.value)/Number(add2.value);
-    }
-    else if (operatorInput.value == "multiply")
-    {
-        answer.textContent += Number(add1.value)*Number(add2.value);
-    }
-    else
-    {
-        //Broken.
-    }
+        case "add":
+            answer.textContent += Number(add1.value)+Number(add2.value);
+            break;
+        case "subtract":
+            answer.textContent += Number(add1.value)-Number(add2.value);
+            break;
+        case "divide":
+            answer.textContent += Number(add1.value)/Number(add2.value);
+            break;
+        case "multiply":
+            answer.textContent += Number(add1.value)*Number(add2.value);
+            break;
+        default:
+            break;
+    }  
 });
 
 
