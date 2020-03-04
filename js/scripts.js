@@ -66,7 +66,7 @@ function keyUpHandler(e)
     }
     if (e.key == "KeyX" || e.key == "x")
     {
-        xPressed = true;
+        xPressed = false;
     }
 }
 class brick 
@@ -89,12 +89,11 @@ class brick
         }
         else if (dir == "left")
         {
+            this.x = this.x + this.w - this.h;
+
             var hold = this.h;
             this.h = this.w;
             this.w = hold;
-
-            this.x = this.x - this.h;
-
         }
     }
 
