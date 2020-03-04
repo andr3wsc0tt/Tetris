@@ -6,10 +6,13 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 var x = canvas.width / 2;
 var y = canvas.height / 2;
+var rotate = 0;
+
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
+var zPressed = false;
 
 function keyDownHandler(e)
 {
@@ -28,6 +31,10 @@ function keyDownHandler(e)
     if (e.key == "Down" || e.key  == "ArrowDown")
     {
         downPressed = true;
+    }
+    if (e.key == "KeyZ" || e.key == "z")
+    {
+        zPressed = true;
     }
 }
 
@@ -49,14 +56,35 @@ function keyUpHandler(e)
     {
         downPressed = false;
     }
+    if (e.key == "KeyZ" || e.key == "z")
+    {
+        zPressed = false;
+    }
+}
+class brick 
+{
+    constructor(x, y, w, h)
+    {
+        this.x = 5;
+        this.y = 5;
+        this.w = 25;
+        this.h = 25;
+    }
 }
 
-function drawBrick()
+var brick1 = new brick();
+
+function drawBrick(brick)
 {
     ctx.beginPath();
-    ctx.rect(x, y, 5, 5);
-    ctx.fillStyle = "#0095DD";
-    // var gradient = ctx.createLinearGradient(0, 0, 170, 0);
+    ctx.rect(brick.x, brick.y, brick.w, brick.h);
+
+    var gradient = ctx.createLinearGradient(brick.x, brick.y, brick.x+brick.w, brick.y+brick.h);
+    gradient.addColorStop("0", "magenta");
+    gradient.addColorStop("0.5", "blue");
+    gradient.addColorStop("1.0", "red");
+    ctx.fillStyle = gradient;
+
     ctx.fill();
     ctx.closePath();
 }
@@ -64,17 +92,20 @@ function drawBrick()
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBrick();
+    
+    drawBrick(brick1);
 
     if (rightPressed)
-        x += 1;
+        brick1.x += 1;
     if (leftPressed)
-        x -= 1;
+        brick1.x -= 1;
     if (upPressed)
-        y -= 1;
+        brick1.y -= 1;
     if (downPressed)
-        y += 1;
- 
+        brick1.y += 1;
+    if (zPressed)
+        rotate = 90;
+
     requestAnimationFrame(draw);
 }
 

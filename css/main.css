@@ -1,1 +1,6 @@
-canvas {background: #eee}
+canvas 
+{
+    background: #eee;
+    height: 50vh;
+    width: 50vw;
+}
