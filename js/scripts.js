@@ -13,6 +13,7 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 var zPressed = false;
+var xPressed = false;
 
 function keyDownHandler(e)
 {
@@ -35,6 +36,10 @@ function keyDownHandler(e)
     if (e.key == "KeyZ" || e.key == "z")
     {
         zPressed = true;
+    }
+    if (e.key == "KeyX" || e.key == "x")
+    {
+        xPressed = true;
     }
 }
 function keyUpHandler(e)
@@ -59,6 +64,10 @@ function keyUpHandler(e)
     {
         zPressed = false;
     }
+    if (e.key == "KeyX" || e.key == "x")
+    {
+        xPressed = true;
+    }
 }
 class brick 
 {
@@ -70,11 +79,23 @@ class brick
         this.h = 35;
     }
 
-    rotate()
+    rotate(dir)
     {
-        var hold = this.h;
-        this.h = this.w;
-        this.w = hold;
+        if (dir == "right")
+        {
+            var hold = this.h;
+            this.h = this.w;
+            this.w = hold;
+        }
+        else if (dir == "left")
+        {
+            var hold = this.h;
+            this.h = this.w;
+            this.w = hold;
+
+            this.x = this.x - this.h;
+
+        }
     }
 
 }
@@ -112,8 +133,13 @@ function draw()
         brick1.y += 1;
     if (zPressed)
     {
-        brick1.rotate();
+        brick1.rotate("right");
         zPressed = false;
+    }
+    if (xPressed)
+    {
+        brick1.rotate("left");
+        xPressed = false;
     }
 
     requestAnimationFrame(draw);
