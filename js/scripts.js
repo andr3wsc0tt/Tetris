@@ -6,7 +6,7 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 var x = canvas.width / 2;
 var y = canvas.height / 2;
-var rotate = 0;
+var rotate0 = 0;
 
 var rightPressed = false;
 var leftPressed = false;
@@ -37,7 +37,6 @@ function keyDownHandler(e)
         zPressed = true;
     }
 }
-
 function keyUpHandler(e)
 {
     if (e.key == "Right" || e.key  == "ArrowRight")
@@ -68,8 +67,16 @@ class brick
         this.x = 5;
         this.y = 5;
         this.w = 25;
-        this.h = 25;
+        this.h = 35;
     }
+
+    rotate()
+    {
+        var hold = this.h;
+        this.h = this.w;
+        this.w = hold;
+    }
+
 }
 
 var brick1 = new brick();
@@ -104,7 +111,10 @@ function draw()
     if (downPressed)
         brick1.y += 1;
     if (zPressed)
-        rotate = 90;
+    {
+        brick1.rotate();
+        zPressed = false;
+    }
 
     requestAnimationFrame(draw);
 }
