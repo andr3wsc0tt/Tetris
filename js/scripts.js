@@ -135,14 +135,20 @@ function drawShape(shape_name, shape)
     }
 }
 
-function moveRight(shape_item)
+function move(shape_item)
 {
     for (let i = 0; i < 3; i++)
     {
         for (let j = 0; j < 3; j++)
         {
-            console.error(shape_item[0][0].x);
-            x += 1;
+            if (rightPressed)
+                x += 1;
+            if (leftPressed)
+                x -= 1;
+            if (upPressed)
+                y -= 1;
+            if (downPressed)
+                y += 1;
         }
     }
 }
@@ -153,14 +159,7 @@ function draw()
     var shape = [];
     drawShape("block", shape);
 
-    if (rightPressed)
-        moveRight(shape[0]);
-    if (leftPressed)
-        brick1.x -= 1;
-    if (upPressed)
-        brick1.y -= 1;
-    if (downPressed)
-        brick1.y += 1;
+    move(shape[0]);
     if (zPressed)
     {
         brick1.rotate("right");
