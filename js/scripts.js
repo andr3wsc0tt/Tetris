@@ -14,6 +14,8 @@ var upPressed = false;
 var downPressed = false;
 var zPressed = false;
 var xPressed = false;
+var brickWidth = 10;
+var brickHeight = 10;
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -78,7 +80,6 @@ class brick {
     }
 
 }
-
 function drawBrick(brick) {
     ctx.beginPath();
     ctx.rect(brick.x, brick.y, brick.w, brick.h);
@@ -93,7 +94,6 @@ function drawBrick(brick) {
     ctx.stroke();
     ctx.closePath();
 }
-
 function createShape(shape_name, shapes) {
     var row = [];
     switch (shape_name) {
@@ -102,7 +102,7 @@ function createShape(shape_name, shapes) {
                 var col = [];
                 row[i] = [];
                 for (let j = 0; j < 3; j++) {
-                    col[j] = new brick(x + (j * 35), y + (i * 35), 35, 35);
+                    col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
                 }
                 row[i] = col;
             }
@@ -114,7 +114,7 @@ function createShape(shape_name, shapes) {
                 row[i] = [];
                 for (let j = 0; j < 3; j++) {
                     if ((i == 0 && j == 1) || (i == 1) || (i == 2 && j == 1))
-                        col[j] = new brick(x + (j * 35), y + (i * 35), 35, 35);
+                        col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
                 }
                 row[i] = col;
             }
@@ -122,7 +122,6 @@ function createShape(shape_name, shapes) {
             break;
     }
 }
-
 function drawShape(shape) {
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
@@ -131,13 +130,12 @@ function drawShape(shape) {
         }
     }
 }
-
 function move(shape_item) {
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (shape_item[i][j] != undefined)
             {
-                if (rightPressed)
+                if (rightPressed && collisionDetection(shape_item))
                     shape_item[i][j].x += 1;
                 if (leftPressed)
                     shape_item[i][j].x -= 1;
@@ -149,12 +147,29 @@ function move(shape_item) {
         }
     }
 }
+function collisionDetection(shape_item, shapes)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        if (shape_item[2][i] != undefined)
+        {
+            if ((shape_item[2][i].y/2)+shape_item[2][i].h < 0 )
+                return false;
+        }
+    }
+    return true;
+}
+
+// Create a random shape
+// Choose a random x value thats JUST below y=0
+// Drop it by level=speed.
+// Once it collides with anything(ground or block) add to placed blocks and repeat
 
 var shapes = [];
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     createShape("cross", shapes);
-    drawShape(shapes[0]);
+    drawShape(shapes[0]); 
     move(shapes[0]);
 
     if (zPressed) {
