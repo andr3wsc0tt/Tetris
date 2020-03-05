@@ -114,7 +114,7 @@ function drawBrick(brick)
     ctx.closePath();
 }
 
-function drawShape(shape_name, shape)
+function createShape(shape_name, shapes)
 {
     var row = [];
     switch(shape_name)
@@ -127,11 +127,22 @@ function drawShape(shape_name, shape)
                 for (let j = 0; j < 3; j++)
                 {
                     col[j] = new brick(x+(j*35), y+(i*35), 35, 35);
-                    drawBrick(col[j]);
                 }
                 row[i] = col;
             }
-            shape.push(row);
+            shapes.push(row);
+            break;
+    }
+}
+
+function drawShape(shape)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        for (let j = 0; j < 3; j++)
+        {
+            drawBrick(shape[i][j]);
+        }
     }
 }
 
@@ -142,24 +153,25 @@ function move(shape_item)
         for (let j = 0; j < 3; j++)
         {
             if (rightPressed)
-                x += 1;
+                shape_item[i][j].x += 1;
             if (leftPressed)
-                x -= 1;
+                shape_item[i][j].x -= 1;
             if (upPressed)
-                y -= 1;
+                shape_item[i][j].y -= 1;
             if (downPressed)
-                y += 1;
+                shape_item[i][j].y += 1;
         }
     }
 }
 
+var shapes = [];
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    var shape = [];
-    drawShape("block", shape);
+    createShape("block", shapes);
+    drawShape(shapes[0]);
+    move(shapes[0]);
 
-    move(shape[0]);
     if (zPressed)
     {
         brick1.rotate("right");
