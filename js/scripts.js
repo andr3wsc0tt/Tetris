@@ -123,10 +123,10 @@ function drawShape(shape_name, shape)
             for (let i = 0; i < 3; i++)
             {
                 var col = [];
+                row[i] = [];
                 for (let j = 0; j < 3; j++)
                 {
                     col[j] = new brick(x+(j*35), y+(i*35), 35, 35);
-                    row[j] = [];
                     drawBrick(col[j]);
                 }
                 row[i] = col;
@@ -141,7 +141,8 @@ function moveRight(shape_item)
     {
         for (let j = 0; j < 3; j++)
         {
-            shape_item[i][j].x += 1;
+            console.error(shape_item[0][0].x);
+            x += 1;
         }
     }
 }
