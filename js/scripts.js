@@ -71,12 +71,12 @@ function keyUpHandler(e)
 }
 class brick 
 {
-    constructor(x, y, w, h)
+    constructor(x_, y_, w_, h_)
     {
-        this.x = 5;
-        this.y = 5;
-        this.w = 25;
-        this.h = 35;
+        this.x = x_;
+        this.y = y_;
+        this.w = w_;
+        this.h = h_;
     }
 
     rotate(dir)
@@ -90,7 +90,6 @@ class brick
         else if (dir == "left")
         {
             this.x = this.x + this.w - this.h;
-
             var hold = this.h;
             this.h = this.w;
             this.w = hold;
@@ -98,8 +97,6 @@ class brick
     }
 
 }
-
-var brick1 = new brick();
 
 function drawBrick(brick)
 {
@@ -111,19 +108,52 @@ function drawBrick(brick)
     gradient.addColorStop("0.5", "blue");
     gradient.addColorStop("1.0", "red");
     ctx.fillStyle = gradient;
-
+    ctx.strokeStyle = "black";
     ctx.fill();
+    ctx.stroke();
     ctx.closePath();
+}
+
+function drawShape(shape_name, shape)
+{
+    var row = [];
+    switch(shape_name)
+    {
+        case "block":
+            for (let i = 0; i < 3; i++)
+            {
+                var col = [];
+                for (let j = 0; j < 3; j++)
+                {
+                    col[j] = new brick(x+(j*35), y+(i*35), 35, 35);
+                    row[j] = [];
+                    drawBrick(col[j]);
+                }
+                row[i] = col;
+            }
+            shape.push(row);
+    }
+}
+
+function moveRight(shape_item)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        for (let j = 0; j < 3; j++)
+        {
+            shape_item[i][j].x += 1;
+        }
+    }
 }
 
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    drawBrick(brick1);
+    var shape = [];
+    drawShape("block", shape);
 
     if (rightPressed)
-        brick1.x += 1;
+        moveRight(shape[0]);
     if (leftPressed)
         brick1.x -= 1;
     if (upPressed)
