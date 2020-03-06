@@ -135,13 +135,13 @@ function move(shape_item) {
         for (let j = 0; j < 3; j++) {
             if (shape_item[i][j] != undefined)
             {
-                if (rightPressed && !rightCollision(shape_item))
+                if (rightPressed && !rightCollision(shape_item) && !leftPressed)
                     shape_item[i][j].x += 1;
-                if (leftPressed && !leftCollision(shape_item))
+                if (leftPressed && !leftCollision(shape_item) && !rightPressed)
                     shape_item[i][j].x -= 1;
                 if (upPressed)
                     shape_item[i][j].y -= 1;
-                if (downPressed && !groundCollision(shape_item))
+                if (downPressed && !groundCollision(shape_item))  
                     shape_item[i][j].y += 1;
             }
         }
@@ -154,7 +154,7 @@ function groundCollision(shape_item, shapes)
         if (shape_item[2][i] != undefined)
         {
             // console.log((shape_item[2][i].y/2)+shape_item[2][i].h);
-            if ((shape_item[2][i].y/2)+shape_item[2][i].h > 80 ) // Not sure why it's 80?
+            if ((shape_item[2][i].y/2)+(shape_item[2][i].h/2) > 80 ) // Not sure why it's 80?
             {
                 return true;
             }
@@ -162,7 +162,6 @@ function groundCollision(shape_item, shapes)
     }
     return false;
 }
-
 function rightCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
@@ -178,7 +177,6 @@ function rightCollision(shape_item)
     }
     return false;
 }
-
 function leftCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
