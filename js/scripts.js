@@ -209,7 +209,41 @@ function leftCollision(shape_item)
     return false;
 }
 
-
+function blockCollision(selectedShape, stayShapes)
+{
+    for (let selected_y = 0; selected_y < 3; selected_y++)
+    {
+        for (let selected_x = 0; selected_x < 3; selected_x++)
+        {
+            var block = selectedShape[selected_y][selected_x];
+            
+            if (block != undefined)
+            {
+                for (var shape in stayShapes)
+                {
+                    var whole_shape = stayShapes[shape];
+                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    {
+                        for (let shape_x = 0; shape_x < 3; shape_x++)
+                        {   
+                            var check_shape = whole_shape[shape_y][shape_x];
+                            if (check_shape != undefined)
+                            {
+                                if ((block.x == check_shape.x) && ((block.x+block.w) == (check_shape.x+check_shape.w)) && (block.y+block.h == check_shape.y))
+                                {
+                                    console.log("HIT!");
+                                    return true;
+                                }
+                                // else
+                                //     console.error([shape_x, shape_y], [selected_x, selected_y], block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+} 
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -248,6 +282,8 @@ function draw() {
         selectedShape = createShape("cross");
     }
     
+    blockCollision(selectedShape, shapes);
+
     move(selectedShape); // Let the player move
     drawShape(selectedShape); // Draw that movement
 
@@ -256,7 +292,7 @@ function draw() {
         drawShape(shapes[stayShapes]); 
     }
 
-    if (groundCollision(selectedShape)) // If the moving shape has landed
+    if (groundCollision(selectedShape) || blockCollision(selectedShape, shapes)) // If the moving shape has landed
     {
         shapes.push(selectedShape); // Save it to the board
         selectedShape = null; // Reset it
