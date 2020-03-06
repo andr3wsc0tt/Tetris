@@ -191,8 +191,6 @@ function move(shape_item, shapes) {
                     shape_item[i][j].y += 10;
                 }
             }
-    // if (downPressed && rightPressed)
-    //     console.log("R-DIAG");
 }
 function groundCollision(shape_item)
 {
