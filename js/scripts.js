@@ -159,7 +159,7 @@ function move(shape_item, shapes) {
                     shape_item[i][j].y -= 10;
                 }
             }
-    if (downPressed && !groundCollision(shape_item))  
+    if (downPressed && !groundCollision(shape_item) && !blockCollisionTop(shape_item, shapes))  
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (shape_item[i][j] != undefined)
@@ -214,6 +214,8 @@ function leftCollision(shape_item)
     }
     return false;
 }
+
+// Block collision's can be refactored.
 function blockCollisionLeft(selectedShape, stayShapes)
 {
     for (let selected_y = 0; selected_y < 3; selected_y++)
@@ -269,6 +271,40 @@ function blockCollisionRight(selectedShape, stayShapes)
                             if (check_shape != undefined)
                             {
                                 if ((block.x+block.w == check_shape.x) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
+                                {
+                                    return true;
+                                }
+                                // else
+                                //     console.error([shape_x, shape_y], [selected_x, selected_y], block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+function blockCollisionTop(selectedShape, stayShapes)
+{
+    for (let selected_y = 0; selected_y < 3; selected_y++)
+    {
+        for (let selected_x = 0; selected_x < 3; selected_x++)
+        {
+            var block = selectedShape[selected_y][selected_x];
+            
+            if (block != undefined)
+            {
+                for (var shape in stayShapes)
+                {
+                    var whole_shape = stayShapes[shape];
+                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    {
+                        for (let shape_x = 0; shape_x < 3; shape_x++)
+                        {   
+                            var check_shape = whole_shape[shape_y][shape_x];
+                            if (check_shape != undefined)
+                            {
+                                if ((block.x == check_shape.x) && ((block.y+block.h) == (check_shape.y)))
                                 {
                                     return true;
                                 }
@@ -346,8 +382,7 @@ function blockDiagRight(selectedShape, stayShapes)
         }
     }
 }
-
-function blockDrop(selectedShape, stayShapes)
+function selectedDrop(selectedShape, stayShapes)
 {
     for (let selected_y = 0; selected_y < 3; selected_y++)
     {
@@ -387,31 +422,19 @@ function blockDrop(selectedShape, stayShapes)
 // Once it collides with ground add to placed blocks and repeat - DONE
 // Once it collides with other blocks place and repeat - DONE
 // Block left and right collisions - DONE
+// Block diag collisions - DONE
+// Give one turn before drop stick - DONE
 
 // Drop it by level=speed.
 
-
-function play()
-{
-    
-    if (selectedShape == null) // If there is no new shape, create one
-    {
-        selectedShape = createShape("cross");
-    }
-
-    if (collision(selectedShape, shapes)) // If it collides with another shape or the ground
-    {
-        shapes.push(selectedShape); // Save it to the inplay shapes
-        selectedShape = null; // Make it null
-    }
-
-    checkWin();
-
-}
+// More Shapes
+// Die
+// Score
+// TETRIS!!!
 
 var shapes = [];
-var selectedShape = null;
-
+var selectedShape = null;oneTurn = 0;
+oneTurn = 0;
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -429,11 +452,19 @@ function draw() {
         drawShape(shapes[stayShapes]); 
     }
 
-    if (groundCollision(selectedShape) || blockDrop(selectedShape, shapes)) // If the moving shape has landed
+    if (groundCollision(selectedShape, oneTurn) || selectedDrop(selectedShape, shapes)) // If the moving shape has landed
     {
-        shapes.push(selectedShape); // Save it to the board
-        selectedShape = null; // Reset it
+        if (oneTurn > 2)
+        {
+            shapes.push(selectedShape); // Save it to the board
+            selectedShape = null; // Reset it
+            oneTurn = 0;
+        }
+        else
+            oneTurn += 1;
     }
+    else
+        oneTurn = 0;
 }
 
-setInterval(draw, 100); // chunky movement
+setInterval(draw, 200); // chunky movement
