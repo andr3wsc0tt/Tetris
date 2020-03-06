@@ -121,6 +121,28 @@ function createShape(shape_name) {
                 row[i] = col;
             }
             break;
+        case "L":
+            for (let i = 0; i < 3; i++) {
+                var col = [];
+                row[i] = [];
+                for (let j = 0; j < 3; j++) {
+                    if (i < 3 && j == 0 || i == 2 && j < 2)
+                        col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
+                }
+                row[i] = col;
+            }
+            break;
+        case "reverse-L":
+            for (let i = 0; i < 3; i++) {
+                var col = [];
+                row[i] = [];
+                for (let j = 0; j < 3; j++) {
+                    if (i < 3 && j == 2 || i == 2 && j == 1)
+                        col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
+                }
+                row[i] = col;
+            }
+            break;
     }
     return row;
 }
@@ -437,9 +459,9 @@ function perTurnMove(selectedShape)
 // Block left and right collisions - DONE
 // Block diag collisions - DONE
 // Give one turn before drop stick - DONE
+// Drop it by level=speed - DONE
 
-// Drop it by level=speed.
-
+// Rotate selectedShape
 // More Shapes
 // Die
 // Score
@@ -454,7 +476,7 @@ function draw() {
 
     if (selectedShape == null) // If there is no new shape, create one
     {
-        selectedShape = createShape("cross");
+        selectedShape = createShape("reverse-L");
     }
     
     move(selectedShape, shapes); // Let the player move
@@ -478,7 +500,7 @@ function draw() {
     }
     else
     {
-        perTurnMove(selectedShape);
+        perTurnMove(selectedShape); // Drop by a preset amount
         oneTurn = 0;
     }
 }
