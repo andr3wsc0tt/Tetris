@@ -211,10 +211,12 @@ function leftCollision(shape_item)
 
 
 
-// Create a random shape 
-// Choose a random x value thats JUST below y=0
+// Create a random shape - DONE
+// Choose a random x value thats JUST below y=0 - DONE
+// Once it collides with ground add to placed blocks and repeat - DONE
+
 // Drop it by level=speed.
-// Once it collides with anything(ground or block) add to placed blocks and repeat
+// Once it collides with other blocks place and repeat
 
 function play()
 {
