@@ -135,35 +135,88 @@ function move(shape_item) {
         for (let j = 0; j < 3; j++) {
             if (shape_item[i][j] != undefined)
             {
-                if (rightPressed && collisionDetection(shape_item))
+                if (rightPressed && !rightCollision(shape_item))
                     shape_item[i][j].x += 1;
-                if (leftPressed)
+                if (leftPressed && !leftCollision(shape_item))
                     shape_item[i][j].x -= 1;
                 if (upPressed)
                     shape_item[i][j].y -= 1;
-                if (downPressed)
+                if (downPressed && !groundCollision(shape_item))
                     shape_item[i][j].y += 1;
             }
         }
     }
 }
-function collisionDetection(shape_item, shapes)
+function groundCollision(shape_item, shapes)
 {
     for (let i = 0; i < 3; i++)
     {
         if (shape_item[2][i] != undefined)
         {
-            if ((shape_item[2][i].y/2)+shape_item[2][i].h < 0 )
-                return false;
+            // console.log((shape_item[2][i].y/2)+shape_item[2][i].h);
+            if ((shape_item[2][i].y/2)+shape_item[2][i].h > 80 ) // Not sure why it's 80?
+            {
+                return true;
+            }
         }
     }
-    return true;
+    return false;
+}
+
+function rightCollision(shape_item)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        if (shape_item[i][2] != undefined)
+        {
+            console.log((shape_item[i][2].x)+(shape_item[i][2].w/2));
+            if (shape_item[i][2].x+(shape_item[i][2].w/2) > 295 ) // Not sure why it's 80?
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function leftCollision(shape_item)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        if (shape_item[i][0] != undefined)
+        {
+            console.log((shape_item[i][0].x)-(shape_item[i][0].w/2));
+            if ((shape_item[i][0].x)-(shape_item[i][0].w/2) < 0 ) // Not sure why it's 80?
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 // Create a random shape
 // Choose a random x value thats JUST below y=0
 // Drop it by level=speed.
 // Once it collides with anything(ground or block) add to placed blocks and repeat
+
+var dy = -1; // falling
+function play()
+{
+    if (selectedShape == null) // If there is no new shape, create one
+    {
+        createShape("cross", shapes);
+    }
+
+    if (collision(selectedShape, shapes)) // If it collides with another shape or the ground
+    {
+        shapes.push(selectedShape); // Save it to the inplay shapes
+        selectedShape = null; // Make it null
+    }
+
+    checkWin();
+
+}
 
 var shapes = [];
 function draw() {
