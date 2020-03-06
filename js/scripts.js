@@ -18,7 +18,7 @@ var zPressed = false;
 var xPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
-var dy = 0.05; // falling
+var dy = 10; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -136,22 +136,25 @@ function move(shape_item, shapes) {
     
     if (rightPressed && downPressed && blockDiagRight(shape_item, shapes))
         return;
+    
     if (rightPressed && !rightCollision(shape_item) && !leftPressed && !blockCollisionRight(shape_item, shapes))
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (shape_item[i][j] != undefined)
-                    shape_item[i][j].x += 10;
-                }
-            }
-    if (leftPressed && downPressed && blockDiagLeft(shape_item, shapes))
-        return;
-    if (leftPressed && !leftCollision(shape_item) && !rightPressed && !blockCollisionLeft(shape_item, shapes))
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (shape_item[i][j] != undefined)
-                    shape_item[i][j].x -= 10;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (shape_item[i][j] != undefined)
+                shape_item[i][j].x += 10;
             }
         }
+        
+    if (leftPressed && downPressed && blockDiagLeft(shape_item, shapes))
+        return;
+    
+    if (leftPressed && !leftCollision(shape_item) && !rightPressed && !blockCollisionLeft(shape_item, shapes))
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (shape_item[i][j] != undefined)
+                shape_item[i][j].x -= 10;
+        }
+    }
     if (upPressed)
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
@@ -214,7 +217,6 @@ function leftCollision(shape_item)
     }
     return false;
 }
-
 // Block collision's can be refactored.
 function blockCollisionLeft(selectedShape, stayShapes)
 {
@@ -416,6 +418,17 @@ function selectedDrop(selectedShape, stayShapes)
         }
     }
 } 
+function perTurnMove(selectedShape)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        for (let j = 0; j < 3; j++)
+        {
+            if (selectedShape[i][j] != undefined)
+                selectedShape[i][j].y += dy;
+        }
+    }
+}
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -433,8 +446,8 @@ function selectedDrop(selectedShape, stayShapes)
 // TETRIS!!!
 
 var shapes = [];
-var selectedShape = null;oneTurn = 0;
-oneTurn = 0;
+var selectedShape = null;
+oneTurn = 0; // Timer for how long you can to stay on a block before you stick
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -452,7 +465,7 @@ function draw() {
         drawShape(shapes[stayShapes]); 
     }
 
-    if (groundCollision(selectedShape, oneTurn) || selectedDrop(selectedShape, shapes)) // If the moving shape has landed
+    if (groundCollision(selectedShape) || selectedDrop(selectedShape, shapes)) // If the moving shape has landed
     {
         if (oneTurn > 2)
         {
@@ -464,7 +477,10 @@ function draw() {
             oneTurn += 1;
     }
     else
+    {
+        perTurnMove(selectedShape);
         oneTurn = 0;
+    }
 }
 
 setInterval(draw, 200); // chunky movement
