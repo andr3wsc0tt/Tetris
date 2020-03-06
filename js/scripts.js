@@ -134,6 +134,8 @@ function drawShape(shape) {
 }
 function move(shape_item, shapes) {
     
+    if (rightPressed && downPressed && blockDiagRight(shape_item, shapes))
+        return;
     if (rightPressed && !rightCollision(shape_item) && !leftPressed && !blockCollisionRight(shape_item, shapes))
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
@@ -141,6 +143,8 @@ function move(shape_item, shapes) {
                     shape_item[i][j].x += 10;
                 }
             }
+    if (leftPressed && downPressed && blockDiagLeft(shape_item, shapes))
+        return;
     if (leftPressed && !leftCollision(shape_item) && !rightPressed && !blockCollisionLeft(shape_item, shapes))
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
@@ -162,6 +166,8 @@ function move(shape_item, shapes) {
                     shape_item[i][j].y += 10;
                 }
             }
+    // if (downPressed && rightPressed)
+    //     console.log("R-DIAG");
 }
 function groundCollision(shape_item)
 {
@@ -208,7 +214,6 @@ function leftCollision(shape_item)
     }
     return false;
 }
-
 function blockCollisionLeft(selectedShape, stayShapes)
 {
     for (let selected_y = 0; selected_y < 3; selected_y++)
@@ -277,6 +282,70 @@ function blockCollisionRight(selectedShape, stayShapes)
         }
     }
 }
+function blockDiagLeft(selectedShape, stayShapes)
+{
+    for (let selected_y = 0; selected_y < 3; selected_y++)
+    {
+        for (let selected_x = 0; selected_x < 3; selected_x++)
+        {
+            var block = selectedShape[selected_y][selected_x];
+            
+            if (block != undefined)
+            {
+                for (var shape in stayShapes)
+                {
+                    var whole_shape = stayShapes[shape];
+                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    {
+                        for (let shape_x = 0; shape_x < 3; shape_x++)
+                        {   
+                            var check_shape = whole_shape[shape_y][shape_x];
+                            if (check_shape != undefined)
+                            {
+                                if ((block.y+block.h == check_shape.y) && (block.x == check_shape.x+check_shape.w))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+function blockDiagRight(selectedShape, stayShapes)
+{
+    for (let selected_y = 0; selected_y < 3; selected_y++)
+    {
+        for (let selected_x = 0; selected_x < 3; selected_x++)
+        {
+            var block = selectedShape[selected_y][selected_x];
+            
+            if (block != undefined)
+            {
+                for (var shape in stayShapes)
+                {
+                    var whole_shape = stayShapes[shape];
+                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    {
+                        for (let shape_x = 0; shape_x < 3; shape_x++)
+                        {   
+                            var check_shape = whole_shape[shape_y][shape_x];
+                            if (check_shape != undefined)
+                            {
+                                if ((block.y+block.h == check_shape.y) && (block.x+block.w == check_shape.x))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 function blockDrop(selectedShape, stayShapes)
 {
@@ -316,9 +385,11 @@ function blockDrop(selectedShape, stayShapes)
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
 // Once it collides with ground add to placed blocks and repeat - DONE
+// Once it collides with other blocks place and repeat - DONE
+// Block left and right collisions - DONE
 
 // Drop it by level=speed.
-// Once it collides with other blocks place and repeat
+
 
 function play()
 {
