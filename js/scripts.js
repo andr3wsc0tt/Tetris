@@ -61,11 +61,12 @@ function keyUpHandler(e) {
     }
 }
 class brick {
-    constructor(x_, y_, w_, h_) {
+    constructor(x_, y_, w_, h_, shape_) {
         this.x = x_;
         this.y = y_;
         this.w = w_;
         this.h = h_;
+        this.shape_name = shape_;
     }
 
     rotate(dir) {
@@ -97,51 +98,71 @@ function drawBrick(brick) {
     ctx.stroke();
     ctx.closePath();
 }
+function shapeTest(i, j, shape_name)
+{
+    switch(shape_name){
+        case "block":
+            return true;
+            break;
+        case "cross":
+            return (i == 0 && j == 1) || (i == 1) || (i == 2 && j == 1);
+            break;
+        case "L":
+            return (i < 3 && j == 1 || i == 2 && j == 2);
+            break;
+        case "RR-L":
+            return (i == 1 && j < 3 || i == 0 && j == 2);
+            break;
+        case "RRR-L":
+            return (i < 3 && j == 1 || i == 0 && j == 0);
+            break;
+        case "RRRR-L":
+            return (i == 1 && j < 3 || i == 2 && j == 0);
+            break;
+        case "reverse-L":
+            return (i < 3 && j == 1 || i == 2 && j == 0);
+            break;
+
+    }
+}
+function shapeTemplate(shape_name, row)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        var col = [];
+        row[i] = [];
+        for (let j = 0; j < 3; j++)
+        {
+            if (shapeTest(i, j, shape_name))
+                col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight, shape_name);
+        }
+        row[i] = col;
+    }
+    return row;
+}
 function createShape(shape_name) {
     var row = [];
     switch (shape_name) {
         case "block":
-            for (let i = 0; i < 3; i++) {
-                var col = [];
-                row[i] = [];
-                for (let j = 0; j < 3; j++) {
-                    col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
-                }
-                row[i] = col;
-            }
+            row = shapeTemplate("block", row);
             break;
         case "cross":
-            for (let i = 0; i < 3; i++) {
-                var col = [];
-                row[i] = [];
-                for (let j = 0; j < 3; j++) {
-                    if ((i == 0 && j == 1) || (i == 1) || (i == 2 && j == 1))
-                        col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
-                }
-                row[i] = col;
-            }
+            shapeTemplate("cross", row);
             break;
         case "L":
-            for (let i = 0; i < 3; i++) {
-                var col = [];
-                row[i] = [];
-                for (let j = 0; j < 3; j++) {
-                    if (i < 3 && j == 0 || i == 2 && j < 2)
-                        col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
-                }
-                row[i] = col;
-            }
+            shapeTemplate("L", row);
+            break;
+        case "RR-L":
+            shapeTemplate("RR-L", row);
+            break;
+        case "RRR-L":
+            shapeTemplate("RRR-L", row);
+            break;
+        case "RRRR-L":
+            shapeTemplate("RRRR-L", row);
             break;
         case "reverse-L":
-            for (let i = 0; i < 3; i++) {
-                var col = [];
-                row[i] = [];
-                for (let j = 0; j < 3; j++) {
-                    if (i < 3 && j == 2 || i == 2 && j == 1)
-                        col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
-                }
-                row[i] = col;
-            }
+            shapeTemplate("reverse-L", row);
             break;
     }
     return row;
@@ -196,14 +217,15 @@ function groundCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
     {
-        if (shape_item[2][i] != undefined)
-        {
-            // console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
-            if ((shape_item[2][i].y)+(shape_item[2][i].h/2) >= 145 ) // Not sure why it's 80?
+        for (let j = 0; j < 3; j++)
+            if (shape_item[j][i] != undefined)
             {
-                return true;
+                // console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
+                if ((shape_item[j][i].y)+(shape_item[j][i].h/2) >= 145 ) // Not sure why it's 80?
+                {
+                    return true;
+                }
             }
-        }
     }
     return false;
 }
@@ -211,12 +233,15 @@ function rightCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
     {
-        if (shape_item[i][2] != undefined)
+        for (let j = 0; j < 3; j++)
         {
-            // console.log((shape_item[i][2].x)+(shape_item[i][2].w/2));
-            if (shape_item[i][2].x+(shape_item[i][2].w/2) > 295 ) // Not sure why it's 80?
+            if (shape_item[i][j] != undefined)
             {
-                return true;
+                // console.log((shape_item[i][2].x)+(shape_item[i][2].w/2));
+                if (shape_item[i][j].x+(shape_item[i][j].w/2) > 295 ) // Not sure why it's 80?
+                {
+                    return true;
+                }
             }
         }
     }
@@ -226,12 +251,15 @@ function leftCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
     {
-        if (shape_item[i][0] != undefined)
+        for (let j = 0; j < 3; j++)
         {
-            // console.log((shape_item[i][0].x)-(shape_item[i][0].w/2));
-            if ((shape_item[i][0].x)-(shape_item[i][0].w/2) < 0 ) // Not sure why it's 80?
+            if (shape_item[i][0] != undefined)
             {
-                return true;
+                // console.log((shape_item[i][0].x)-(shape_item[i][0].w/2));
+                if ((shape_item[i][0].x)-(shape_item[i][0].w/2) < 0 ) // Not sure why it's 80?
+                {
+                    return true;
+                }
             }
         }
     }
@@ -449,6 +477,15 @@ function perTurnMove(selectedShape)
         }
     }
 }
+function rotateShape(shape)
+{
+    var L = ["L", "RR-L", "RRR-L", "RRRR-L"];
+    if(L.includes(shape.shape_name))
+    {
+        console.log((L.indexOf(shape.shape_name)+1)%(L.length) );
+        return createShape(L[L.indexOf(shape.shape_name)+1%L.length]);
+    }
+}
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -475,9 +512,14 @@ function draw() {
 
     if (selectedShape == null) // If there is no new shape, create one
     {
-        selectedShape = createShape("reverse-L");
+        selectedShape = createShape("L");
     }
-    
+
+    if (zPressed)
+    {
+        selectedShape = rotateShape(selectedShape[0][1]);
+    }
+
     move(selectedShape, shapes); // Let the player move
     drawShape(selectedShape); // Draw that movement
 
