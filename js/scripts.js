@@ -461,8 +461,9 @@ function perTurnMove(selectedShape)
 // Give one turn before drop stick - DONE
 // Drop it by level=speed - DONE
 
+// More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
+
 // Rotate selectedShape
-// More Shapes
 // Die
 // Score
 // TETRIS!!!
