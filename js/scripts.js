@@ -16,6 +16,7 @@ var zPressed = false;
 var xPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
+var dy = 0.05; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -94,7 +95,7 @@ function drawBrick(brick) {
     ctx.stroke();
     ctx.closePath();
 }
-function createShape(shape_name, shapes) {
+function createShape(shape_name) {
     var row = [];
     switch (shape_name) {
         case "block":
@@ -106,7 +107,6 @@ function createShape(shape_name, shapes) {
                 }
                 row[i] = col;
             }
-            shapes.push(row);
             break;
         case "cross":
             for (let i = 0; i < 3; i++) {
@@ -118,9 +118,9 @@ function createShape(shape_name, shapes) {
                 }
                 row[i] = col;
             }
-            shapes.push(row);
             break;
     }
+    return row;
 }
 function drawShape(shape) {
     for (let i = 0; i < 3; i++) {
@@ -161,13 +161,13 @@ function move(shape_item) {
                 }
             }
 }
-function groundCollision(shape_item, shapes)
+function groundCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
     {
         if (shape_item[2][i] != undefined)
         {
-            console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
+            // console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
             if ((shape_item[2][i].y)+(shape_item[2][i].h/2) > 145 ) // Not sure why it's 80?
             {
                 return true;
@@ -182,7 +182,7 @@ function rightCollision(shape_item)
     {
         if (shape_item[i][2] != undefined)
         {
-            console.log((shape_item[i][2].x)+(shape_item[i][2].w/2));
+            // console.log((shape_item[i][2].x)+(shape_item[i][2].w/2));
             if (shape_item[i][2].x+(shape_item[i][2].w/2) > 295 ) // Not sure why it's 80?
             {
                 return true;
@@ -197,7 +197,7 @@ function leftCollision(shape_item)
     {
         if (shape_item[i][0] != undefined)
         {
-            console.log((shape_item[i][0].x)-(shape_item[i][0].w/2));
+            // console.log((shape_item[i][0].x)-(shape_item[i][0].w/2));
             if ((shape_item[i][0].x)-(shape_item[i][0].w/2) < 0 ) // Not sure why it's 80?
             {
                 return true;
@@ -212,12 +212,12 @@ function leftCollision(shape_item)
 // Drop it by level=speed.
 // Once it collides with anything(ground or block) add to placed blocks and repeat
 
-var dy = -1; // falling
 function play()
 {
+    
     if (selectedShape == null) // If there is no new shape, create one
     {
-        createShape("cross", shapes);
+        selectedShape = createShape("cross");
     }
 
     if (collision(selectedShape, shapes)) // If it collides with another shape or the ground
@@ -231,20 +231,29 @@ function play()
 }
 
 var shapes = [];
+var selectedShape = null;
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    createShape("cross", shapes);
-    drawShape(shapes[0]); 
-    move(shapes[0]);
 
-    if (zPressed) {
-        brick1.rotate("right");
-        zPressed = false;
+    if (selectedShape == null) // If there is no new shape, create one
+    {
+        selectedShape = createShape("cross");
     }
-    if (xPressed) {
-        brick1.rotate("left");
-        xPressed = false;
+    
+    move(selectedShape);
+    drawShape(selectedShape); 
+    for (var stayShapes in shapes)
+    {
+        drawShape(shapes[stayShapes]);
     }
+
+    if (groundCollision(selectedShape))
+    {
+        shapes.push(selectedShape);
+        selectedShape = null;
+    }
+
+
 
     requestAnimationFrame(draw);
 }
