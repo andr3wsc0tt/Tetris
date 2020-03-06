@@ -136,14 +136,14 @@ function move(shape_item) {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (shape_item[i][j] != undefined)
-                    shape_item[i][j].x += 1;
+                    shape_item[i][j].x += 10;
                 }
             }
     if (leftPressed && !leftCollision(shape_item) && !rightPressed)
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (shape_item[i][j] != undefined)
-                    shape_item[i][j].x -= 1;
+                    shape_item[i][j].x -= 10;
             }
         }
     if (upPressed)
@@ -207,6 +207,8 @@ function leftCollision(shape_item)
     return false;
 }
 
+
+
 // Create a random shape
 // Choose a random x value thats JUST below y=0
 // Drop it by level=speed.
@@ -232,6 +234,8 @@ function play()
 
 var shapes = [];
 var selectedShape = null;
+
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -240,22 +244,22 @@ function draw() {
         selectedShape = createShape("cross");
     }
     
-    move(selectedShape);
-    drawShape(selectedShape); 
-    for (var stayShapes in shapes)
+    move(selectedShape); // Let the player move
+    drawShape(selectedShape); // Draw that movement
+
+    for (var stayShapes in shapes) // Draw all the shapes that have landed
     {
-        drawShape(shapes[stayShapes]);
+        drawShape(shapes[stayShapes]); 
     }
 
-    if (groundCollision(selectedShape))
+    if (groundCollision(selectedShape)) // If the moving shape has landed
     {
-        shapes.push(selectedShape);
-        selectedShape = null;
+        shapes.push(selectedShape); // Save it to the board
+        selectedShape = null; // Reset it
     }
 
-
-
-    requestAnimationFrame(draw);
+    // requestAnimationFrame(draw);
 }
 
-draw();
+setInterval(draw, 100);
+//draw();
