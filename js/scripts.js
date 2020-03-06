@@ -131,21 +131,35 @@ function drawShape(shape) {
     }
 }
 function move(shape_item) {
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            if (shape_item[i][j] != undefined)
-            {
-                if (rightPressed && !rightCollision(shape_item) && !leftPressed)
+    
+    if (rightPressed && !rightCollision(shape_item) && !leftPressed)
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (shape_item[i][j] != undefined)
                     shape_item[i][j].x += 1;
-                if (leftPressed && !leftCollision(shape_item) && !rightPressed)
+                }
+            }
+    if (leftPressed && !leftCollision(shape_item) && !rightPressed)
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (shape_item[i][j] != undefined)
                     shape_item[i][j].x -= 1;
-                if (upPressed)
-                    shape_item[i][j].y -= 1;
-                if (downPressed && !groundCollision(shape_item))  
-                    shape_item[i][j].y += 1;
             }
         }
-    }
+    if (upPressed)
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (shape_item[i][j] != undefined)
+                    shape_item[i][j].y -= 1;
+                }
+            }
+    if (downPressed && !groundCollision(shape_item))  
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (shape_item[i][j] != undefined)
+                    shape_item[i][j].y += 1;
+                }
+            }
 }
 function groundCollision(shape_item, shapes)
 {
@@ -153,8 +167,8 @@ function groundCollision(shape_item, shapes)
     {
         if (shape_item[2][i] != undefined)
         {
-            // console.log((shape_item[2][i].y/2)+shape_item[2][i].h);
-            if ((shape_item[2][i].y/2)+(shape_item[2][i].h/2) > 80 ) // Not sure why it's 80?
+            console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
+            if ((shape_item[2][i].y)+(shape_item[2][i].h/2) > 145 ) // Not sure why it's 80?
             {
                 return true;
             }
