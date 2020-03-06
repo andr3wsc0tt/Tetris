@@ -4,9 +4,11 @@ var ctx = canvas.getContext('2d');
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-var x = canvas.width / 2;
-var y = canvas.height / 2;
+var x = 0;
+var y = 0;
 var rotate0 = 0;
+
+console.log(canvas.width, canvas.height);
 
 var rightPressed = false;
 var leftPressed = false;
@@ -150,14 +152,14 @@ function move(shape_item) {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (shape_item[i][j] != undefined)
-                    shape_item[i][j].y -= 1;
+                    shape_item[i][j].y -= 10;
                 }
             }
     if (downPressed && !groundCollision(shape_item))  
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (shape_item[i][j] != undefined)
-                    shape_item[i][j].y += 1;
+                    shape_item[i][j].y += 10;
                 }
             }
 }
@@ -168,7 +170,7 @@ function groundCollision(shape_item)
         if (shape_item[2][i] != undefined)
         {
             // console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
-            if ((shape_item[2][i].y)+(shape_item[2][i].h/2) > 145 ) // Not sure why it's 80?
+            if ((shape_item[2][i].y)+(shape_item[2][i].h/2) >= 145 ) // Not sure why it's 80?
             {
                 return true;
             }
@@ -209,7 +211,7 @@ function leftCollision(shape_item)
 
 
 
-// Create a random shape
+// Create a random shape 
 // Choose a random x value thats JUST below y=0
 // Drop it by level=speed.
 // Once it collides with anything(ground or block) add to placed blocks and repeat
@@ -257,9 +259,6 @@ function draw() {
         shapes.push(selectedShape); // Save it to the board
         selectedShape = null; // Reset it
     }
-
-    // requestAnimationFrame(draw);
 }
 
-setInterval(draw, 100);
-//draw();
+setInterval(draw, 100); // chunky movement
