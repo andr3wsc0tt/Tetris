@@ -10,6 +10,8 @@ var rotate0 = 0;
 
 console.log(canvas.width, canvas.height);
 
+canvas.width = 60;
+
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
@@ -18,7 +20,8 @@ var zPressed = false;
 var xPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
-var dy = 10; // falling
+var tetrisLength = 6; // canvas.width / brickWidth
+var dy = 0; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -178,10 +181,10 @@ function drawShape(shape) {
 }
 function move(shape_item, shapes) {
     
-    if (rightPressed && downPressed && blockDiagRight(shape_item, shapes))
+    if (rightPressed && downPressed && blockDiagRight(shape_item, tetrisBlocks))
         return;
     
-    if (rightPressed && !rightCollision(shape_item) && !leftPressed && !blockCollisionRight(shape_item, shapes))
+    if (rightPressed && !rightCollision(shape_item) && !leftPressed && !blockCollisionRight(shape_item, tetrisBlocks))
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (shape_item[i][j] != undefined)
@@ -189,10 +192,10 @@ function move(shape_item, shapes) {
             }
         }
         
-    if (leftPressed && downPressed && blockDiagLeft(shape_item, shapes))
+    if (leftPressed && downPressed && blockDiagLeft(shape_item, tetrisBlocks))
         return;
     
-    if (leftPressed && !leftCollision(shape_item) && !rightPressed && !blockCollisionLeft(shape_item, shapes))
+    if (leftPressed && !leftCollision(shape_item) && !rightPressed && !blockCollisionLeft(shape_item, tetrisBlocks))
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (shape_item[i][j] != undefined)
@@ -206,7 +209,7 @@ function move(shape_item, shapes) {
                     shape_item[i][j].y -= 10;
                 }
             }
-    if (downPressed && !groundCollision(shape_item) && !blockCollisionTop(shape_item, shapes))  
+    if (downPressed && !groundCollision(shape_item) && !blockCollisionTop(shape_item, tetrisBlocks))  
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 if (shape_item[i][j] != undefined)
@@ -267,7 +270,8 @@ function leftCollision(shape_item)
     return false;
 }
 // Block collision's can be refactored.
-function blockCollisionLeft(selectedShape, stayShapes)
+
+function blockCollisionLeft(selectedShape, tetrisBlocks)
 {
     for (let selected_y = 0; selected_y < 3; selected_y++)
     {
@@ -277,23 +281,19 @@ function blockCollisionLeft(selectedShape, stayShapes)
             
             if (block != undefined)
             {
-                for (var shape in stayShapes)
+                for (var ys in tetrisBlocks)
                 {
-                    var whole_shape = stayShapes[shape];
-                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    for (var xs in tetrisBlocks[ys])
                     {
-                        for (let shape_x = 0; shape_x < 3; shape_x++)
-                        {   
-                            var check_shape = whole_shape[shape_y][shape_x];
-                            if (check_shape != undefined)
+                        var check_shape = tetrisBlocks[ys][xs];
+                        if (check_shape != undefined)
+                        {
+                            if ((block.x == check_shape.x+check_shape.w) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
                             {
-                                if ((block.x == check_shape.x+check_shape.w) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
-                                {
-                                    return true;
-                                }
-                                // else
-                                //     console.error([shape_x, shape_y], [selected_x, selected_y], block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
+                                return true;
                             }
+                            else
+                                console.error(block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
                         }
                     }
                 }
@@ -301,7 +301,7 @@ function blockCollisionLeft(selectedShape, stayShapes)
         }
     }
 }
-function blockCollisionRight(selectedShape, stayShapes)
+function blockCollisionRight(selectedShape, tetrisBlocks)
 {
     for (let selected_y = 0; selected_y < 3; selected_y++)
     {
@@ -311,23 +311,19 @@ function blockCollisionRight(selectedShape, stayShapes)
             
             if (block != undefined)
             {
-                for (var shape in stayShapes)
+                for (var ys in tetrisBlocks)
                 {
-                    var whole_shape = stayShapes[shape];
-                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    for (var xs in tetrisBlocks[ys])
                     {
-                        for (let shape_x = 0; shape_x < 3; shape_x++)
-                        {   
-                            var check_shape = whole_shape[shape_y][shape_x];
-                            if (check_shape != undefined)
+                        var check_shape = tetrisBlocks[ys][xs];
+                        if (check_shape != undefined)
+                        {
+                            if ((block.x+block.w == check_shape.x) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
                             {
-                                if ((block.x+block.w == check_shape.x) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
-                                {
-                                    return true;
-                                }
-                                // else
-                                //     console.error([shape_x, shape_y], [selected_x, selected_y], block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
+                                return true;
                             }
+                            else
+                                console.error(block.x+block.w, check_shape.x , block.y+block.h, check_shape.y+check_shape.h, block.y, check_shape.y);
                         }
                     }
                 }
@@ -345,22 +341,16 @@ function blockCollisionTop(selectedShape, stayShapes)
             
             if (block != undefined)
             {
-                for (var shape in stayShapes)
+                for (var ys in tetrisBlocks)
                 {
-                    var whole_shape = stayShapes[shape];
-                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    for (var xs in tetrisBlocks[ys])
                     {
-                        for (let shape_x = 0; shape_x < 3; shape_x++)
-                        {   
-                            var check_shape = whole_shape[shape_y][shape_x];
-                            if (check_shape != undefined)
+                        var check_shape = tetrisBlocks[ys][xs];
+                        if (check_shape != undefined)
+                        {
+                            if ((block.x == check_shape.x) && ((block.y+block.h) == (check_shape.y)))
                             {
-                                if ((block.x == check_shape.x) && ((block.y+block.h) == (check_shape.y)))
-                                {
-                                    return true;
-                                }
-                                // else
-                                //     console.error([shape_x, shape_y], [selected_x, selected_y], block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
+                                return true;
                             }
                         }
                     }
@@ -371,6 +361,7 @@ function blockCollisionTop(selectedShape, stayShapes)
 }
 function blockDiagLeft(selectedShape, stayShapes)
 {
+    
     for (let selected_y = 0; selected_y < 3; selected_y++)
     {
         for (let selected_x = 0; selected_x < 3; selected_x++)
@@ -379,20 +370,16 @@ function blockDiagLeft(selectedShape, stayShapes)
             
             if (block != undefined)
             {
-                for (var shape in stayShapes)
+                for (var ys in tetrisBlocks)
                 {
-                    var whole_shape = stayShapes[shape];
-                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    for (var xs in tetrisBlocks[ys])
                     {
-                        for (let shape_x = 0; shape_x < 3; shape_x++)
-                        {   
-                            var check_shape = whole_shape[shape_y][shape_x];
-                            if (check_shape != undefined)
+                        var check_shape = tetrisBlocks[ys][xs];
+                        if (check_shape != undefined)
+                        {
+                            if ((block.y+block.h == check_shape.y) && (block.x == check_shape.x+check_shape.w))
                             {
-                                if ((block.y+block.h == check_shape.y) && (block.x == check_shape.x+check_shape.w))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -403,6 +390,7 @@ function blockDiagLeft(selectedShape, stayShapes)
 }
 function blockDiagRight(selectedShape, stayShapes)
 {
+    
     for (let selected_y = 0; selected_y < 3; selected_y++)
     {
         for (let selected_x = 0; selected_x < 3; selected_x++)
@@ -411,20 +399,16 @@ function blockDiagRight(selectedShape, stayShapes)
             
             if (block != undefined)
             {
-                for (var shape in stayShapes)
+                for (var ys in tetrisBlocks)
                 {
-                    var whole_shape = stayShapes[shape];
-                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    for (var xs in tetrisBlocks[ys])
                     {
-                        for (let shape_x = 0; shape_x < 3; shape_x++)
-                        {   
-                            var check_shape = whole_shape[shape_y][shape_x];
-                            if (check_shape != undefined)
+                        var check_shape = tetrisBlocks[ys][xs];
+                        if (check_shape != undefined)
+                        {
+                            if ((block.y+block.h == check_shape.y) && (block.x+block.w == check_shape.x))
                             {
-                                if ((block.y+block.h == check_shape.y) && (block.x+block.w == check_shape.x))
-                                {
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
@@ -435,6 +419,7 @@ function blockDiagRight(selectedShape, stayShapes)
 }
 function selectedDrop(selectedShape, stayShapes)
 {
+    
     for (let selected_y = 0; selected_y < 3; selected_y++)
     {
         for (let selected_x = 0; selected_x < 3; selected_x++)
@@ -443,22 +428,16 @@ function selectedDrop(selectedShape, stayShapes)
             
             if (block != undefined)
             {
-                for (var shape in stayShapes)
+                for (var ys in tetrisBlocks)
                 {
-                    var whole_shape = stayShapes[shape];
-                    for (let shape_y = 0; shape_y < 3; shape_y++)
+                    for (var xs in tetrisBlocks[ys])
                     {
-                        for (let shape_x = 0; shape_x < 3; shape_x++)
-                        {   
-                            var check_shape = whole_shape[shape_y][shape_x];
-                            if (check_shape != undefined)
+                        var check_shape = tetrisBlocks[ys][xs];
+                        if (check_shape != undefined)
+                        {
+                            if ((block.x == check_shape.x) && ((block.x+block.w) == (check_shape.x+check_shape.w)) && (block.y+block.h == check_shape.y))
                             {
-                                if ((block.x == check_shape.x) && ((block.x+block.w) == (check_shape.x+check_shape.w)) && (block.y+block.h == check_shape.y))
-                                {
-                                    return true;
-                                }
-                                // else
-                                //     console.error([shape_x, shape_y], [selected_x, selected_y], block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
+                                return true;
                             }
                         }
                     }
@@ -571,12 +550,28 @@ function drawPlacedShapes(tetrisBlocks)
 }
 function checkTetris(tetrisBlocks)
 {
-    for (var ys in tetrisBlocks)
+    for (var ys in tetrisBlocks) 
         {
-            if (Object.values(tetrisBlocks[ys]).length == 6)
+            console.log(ys);
+            if (Object.values(tetrisBlocks[ys]).length == tetrisLength) // Little Tetris - move every block ABOVE ys down (if there are multiple lines then )
             {
+                var above_height = ys-10;
+                while (tetrisBlocks[above_height] != undefined)
+                {
+                    var height = above_height + 10;
+                    delete tetrisBlocks[height];
+                    tetrisBlocks[height] = tetrisBlocks[above_height];
+                    for (var xs in tetrisBlocks[height])
+                    {
+                        tetrisBlocks[height][xs].y += 10; 
+                    }
+
+                    above_height -= 10;
+
+                }
+
                 console.log(tetrisBlocks[ys]);
-                delete tetrisBlocks[ys];
+                
             }
         }
     return tetrisBlocks;
@@ -630,7 +625,7 @@ function draw() {
         if (oneTurn > 2)
         {    
             tetrisBlocks = addToTetrisBlocks(selectedShape, tetrisBlocks);
-            shapes.push(selectedShape); // Save it to the board
+            // shapes.push(selectedShape); // Save it to the board
             tetrisBlocks = checkTetris(tetrisBlocks);
             selectedShape = null; // Reset it
             oneTurn = 0;
