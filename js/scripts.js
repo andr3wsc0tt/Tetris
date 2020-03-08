@@ -517,7 +517,7 @@ function draw() {
 
     if (zPressed)
     {
-        selectedShape = rotateShape(selectedShape[0][1]);
+        selectedShape = rotateShape(selectedShape[1][1]);
     }
 
     move(selectedShape, shapes); // Let the player move
