@@ -168,6 +168,7 @@ function createShape(shape_name) {
     return row;
 }
 function drawShape(shape) {
+    console.log(shape.shape_name);
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (shape[i][j] != undefined)
@@ -480,10 +481,15 @@ function perTurnMove(selectedShape)
 function rotateShape(shape)
 {
     var L = ["L", "RR-L", "RRR-L", "RRRR-L"];
+    var newShape_name;
     if(L.includes(shape.shape_name))
     {
-        console.log((L.indexOf(shape.shape_name)+1)%(L.length) );
-        return createShape(L[L.indexOf(shape.shape_name)+1%L.length]);
+        if (L.indexOf(shape.shape_name) == 3)
+            newShape_name = "L";
+        else
+            newShape_name = L[L.indexOf(shape.shape_name)+1];
+        console.log(newShape_name);
+        return createShape(newShape_name);
     }
 }
 
@@ -512,7 +518,7 @@ function draw() {
 
     if (selectedShape == null) // If there is no new shape, create one
     {
-        selectedShape = createShape("L");
+        selectedShape = createShape("RRRR-L");
     }
 
     if (zPressed)
