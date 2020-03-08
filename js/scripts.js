@@ -478,7 +478,6 @@ function perTurnMove(selectedShape)
         }
     }
 }
-
 function rotateShape_CCW(selectedShape)
 {
     for (let i = 0; i < 3; i++)
@@ -492,8 +491,7 @@ function rotateShape_CCW(selectedShape)
                 var x0 = selectedShape[1][1].x;
                 var y0 = selectedShape[1][1].y;
 
-
-                console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+                // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
 
                 selectedShape[i][j].x = -y;
                 selectedShape[i][j].y = x;
@@ -506,7 +504,6 @@ function rotateShape_CCW(selectedShape)
         }
     }
 }
-
 function rotateShape_CW(selectedShape)
 {
     for (let i = 0; i < 3; i++)
@@ -520,8 +517,7 @@ function rotateShape_CW(selectedShape)
                 var x0 = selectedShape[1][1].x;
                 var y0 = selectedShape[1][1].y;
 
-
-                console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+                // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
 
                 selectedShape[i][j].x = y;
                 selectedShape[i][j].y = -x;
@@ -534,24 +530,57 @@ function rotateShape_CW(selectedShape)
         }
     }
 }
+function addToTetrisBlocks(selectedShape, tetrisBlocks)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        for (let j = 0; j < 3; j++)
+        {
+            if (selectedShape[i][j] != undefined)
+            {
+                console.error(selectedShape[i][j].x, selectedShape[i][j].y);
+                if (selectedShape[i][j].y in tetrisBlocks)
+                {
+                    tetrisBlocks[selectedShape[i][j].y][selectedShape[i][j].x] = selectedShape[i][j];
+                }
+                else
+                {
+                    tetrisBlocks[selectedShape[i][j].y] = {};
+                    tetrisBlocks[selectedShape[i][j].y][selectedShape[i][j].x] = selectedShape[i][j];
+                }
+            }
 
-// function rotateShape(shape)
-// {
-//     var L = ["L", "RR-L", "RRR-L", "RRRR-L"];
-//     var newShape_name;
+        }
+    }
 
-//     if(L.includes(shape[1][1].shape_name))
-//     {
-//         if (L.indexOf(shape[1][1].shape_name) == 3)
-//             newShape_name = "L";
-//         else
-//             newShape_name = L[L.indexOf(shape[1][1].shape_name)+1];
-
-//         var newShape = createShape(newShape_name);
-
-//         return newShape;
-//     }
-// }
+    return tetrisBlocks;
+}
+function drawPlacedShapes(tetrisBlocks)
+{
+    
+    for (var ys in tetrisBlocks)
+    {
+        for (xs in tetrisBlocks[ys])
+        {
+            if (tetrisBlocks[ys][xs] != undefined)
+            {
+                drawBrick(tetrisBlocks[ys][xs])
+            }
+        }
+    }
+}
+function checkTetris(tetrisBlocks)
+{
+    for (var ys in tetrisBlocks)
+        {
+            if (Object.values(tetrisBlocks[ys]).length == 6)
+            {
+                console.log(tetrisBlocks[ys]);
+                delete tetrisBlocks[ys];
+            }
+        }
+    return tetrisBlocks;
+}
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -561,15 +590,16 @@ function rotateShape_CW(selectedShape)
 // Block diag collisions - DONE
 // Give one turn before drop stick - DONE
 // Drop it by level=speed - DONE
+// Rotate selectedShape
 
 // More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
 
-// Rotate selectedShape
 // Die
 // Score
 // TETRIS!!!
 
 var shapes = [];
+var tetrisBlocks = {};
 var selectedShape = null;
 oneTurn = 0; // Timer for how long you can to stay on a block before you stick
 
@@ -593,16 +623,15 @@ function draw() {
     move(selectedShape, shapes); // Let the player move
     drawShape(selectedShape); // Draw that movement
 
-    for (var stayShapes in shapes) // Draw all the shapes that have landed
-    {
-        drawShape(shapes[stayShapes]); 
-    }
+    drawPlacedShapes(tetrisBlocks);
 
     if (groundCollision(selectedShape) || selectedDrop(selectedShape, shapes)) // If the moving shape has landed
     {
         if (oneTurn > 2)
-        {
+        {    
+            tetrisBlocks = addToTetrisBlocks(selectedShape, tetrisBlocks);
             shapes.push(selectedShape); // Save it to the board
+            tetrisBlocks = checkTetris(tetrisBlocks);
             selectedShape = null; // Reset it
             oneTurn = 0;
         }
