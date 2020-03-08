@@ -478,20 +478,80 @@ function perTurnMove(selectedShape)
         }
     }
 }
-function rotateShape(shape)
+
+function rotateShape_CCW(selectedShape)
 {
-    var L = ["L", "RR-L", "RRR-L", "RRRR-L"];
-    var newShape_name;
-    if(L.includes(shape.shape_name))
+    for (let i = 0; i < 3; i++)
     {
-        if (L.indexOf(shape.shape_name) == 3)
-            newShape_name = "L";
-        else
-            newShape_name = L[L.indexOf(shape.shape_name)+1];
-        console.log(newShape_name);
-        return createShape(newShape_name);
+        for (let j = 0; j < 3; j++)
+        {
+            if(selectedShape[i][j] != undefined)
+            {
+                var x = selectedShape[i][j].x - selectedShape[1][1].x;
+                var y = selectedShape[i][j].y - selectedShape[1][1].y;
+                var x0 = selectedShape[1][1].x;
+                var y0 = selectedShape[1][1].y;
+
+
+                console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+
+                selectedShape[i][j].x = -y;
+                selectedShape[i][j].y = x;
+
+                selectedShape[i][j].x += x0;
+                selectedShape[i][j].y += y0;
+
+
+            }
+        }
     }
 }
+
+function rotateShape_CW(selectedShape)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        for (let j = 0; j < 3; j++)
+        {
+            if(selectedShape[i][j] != undefined)
+            {
+                var x = selectedShape[i][j].x - selectedShape[1][1].x;
+                var y = selectedShape[i][j].y - selectedShape[1][1].y;
+                var x0 = selectedShape[1][1].x;
+                var y0 = selectedShape[1][1].y;
+
+
+                console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+
+                selectedShape[i][j].x = y;
+                selectedShape[i][j].y = -x;
+
+                selectedShape[i][j].x += x0;
+                selectedShape[i][j].y += y0;
+
+
+            }
+        }
+    }
+}
+
+// function rotateShape(shape)
+// {
+//     var L = ["L", "RR-L", "RRR-L", "RRRR-L"];
+//     var newShape_name;
+
+//     if(L.includes(shape[1][1].shape_name))
+//     {
+//         if (L.indexOf(shape[1][1].shape_name) == 3)
+//             newShape_name = "L";
+//         else
+//             newShape_name = L[L.indexOf(shape[1][1].shape_name)+1];
+
+//         var newShape = createShape(newShape_name);
+
+//         return newShape;
+//     }
+// }
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -523,7 +583,11 @@ function draw() {
 
     if (zPressed)
     {
-        selectedShape = rotateShape(selectedShape[1][1]);
+        rotateShape_CCW(selectedShape);
+    }
+    if (xPressed)
+    {
+        rotateShape_CW(selectedShape);
     }
 
     move(selectedShape, shapes); // Let the player move
