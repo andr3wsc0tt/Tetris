@@ -584,12 +584,21 @@ function checkLines(tetrisBlocks)
 // Give one turn before drop stick - DONE
 // Drop it by level=speed - DONE
 // Rotate selectedShape
+// Clear up to 4 full rows - DONE
 
 // More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
 
 // Die
 // Score
 // TETRIS!!!
+// Don't let shapes spin into each other or out of the map
+
+/* User Interface */
+// Reconcile the canvas size and resolution
+// MUSIC!!!
+// Make the keys adequately responsive
+// Colors
+
 
 var shapes = [];
 var tetrisBlocks = {};
