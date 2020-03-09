@@ -556,21 +556,22 @@ function checkLines(tetrisBlocks)
         }
     
     }
-
-    for (let height = 130; height > 0; height -= 10)
+    for (let i = 0; i < 4; i++)
     {
-        if (tetrisBlocks[height] != undefined && tetrisBlocks[height+10] == undefined)
+        for (let height = 130; height > 0; height -= 10)
         {
-            console.log(tetrisBlocks[height], tetrisBlocks[height+10], height);
-            tetrisBlocks[height+10] = tetrisBlocks[height];
-            for (var xs in tetrisBlocks[height+10])
+            if (tetrisBlocks[height] != undefined && tetrisBlocks[height+10] == undefined)
             {
-                tetrisBlocks[height+10][xs].y += 10;
+                console.log(tetrisBlocks[height], tetrisBlocks[height+10], height);
+                tetrisBlocks[height+10] = tetrisBlocks[height];
+                for (var xs in tetrisBlocks[height+10])
+                {
+                    tetrisBlocks[height+10][xs].y += 10;
+                }
+                delete tetrisBlocks[height];
             }
-            delete tetrisBlocks[height];
         }
     }
-
     return tetrisBlocks;
 }
 
