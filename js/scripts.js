@@ -8,7 +8,8 @@ var x = 0;
 var y = 0;
 var rotate0 = 0;
 
-console.log(canvas.width, canvas.height);
+canvas.width = 200;
+canvas.height = 300;
 
 var rightPressed = false;
 var leftPressed = false;
@@ -222,7 +223,7 @@ function groundCollision(shape_item)
             if (shape_item[j][i] != undefined)
             {
                 // console.log((shape_item[2][i].y)+shape_item[2][i].h/2);
-                if ((shape_item[j][i].y)+(shape_item[j][i].h/2) >= 145 ) // Not sure why it's 80?
+                if ((shape_item[j][i].y)+(shape_item[j][i].h/2) >= canvas.height - 10) // Not sure why it's 80?
                 {
                     return true;
                 }
@@ -239,7 +240,7 @@ function rightCollision(shape_item)
             if (shape_item[i][j] != undefined)
             {
                 // console.log((shape_item[i][2].x)+(shape_item[i][2].w/2));
-                if (shape_item[i][j].x+(shape_item[i][j].w/2) > 295 ) // Not sure why it's 80?
+                if (shape_item[i][j].x+(shape_item[i][j].w/2) > canvas.width - 10 ) // Not sure why it's 80?
                 {
                     return true;
                 }
@@ -254,10 +255,10 @@ function leftCollision(shape_item)
     {
         for (let j = 0; j < 3; j++)
         {
-            if (shape_item[i][0] != undefined)
+            if (shape_item[i][j] != undefined)
             {
                 // console.log((shape_item[i][0].x)-(shape_item[i][0].w/2));
-                if ((shape_item[i][0].x)-(shape_item[i][0].w/2) < 0 ) // Not sure why it's 80?
+                if ((shape_item[i][j].x)-(shape_item[i][j].w/2) < 0 ) // Not sure why it's 80?
                 {
                     return true;
                 }
@@ -456,6 +457,7 @@ function perTurnMove(selectedShape)
 }
 function rotateShape_CCW(selectedShape)
 {
+    var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
     {
         for (let j = 0; j < 3; j++)
@@ -468,6 +470,11 @@ function rotateShape_CCW(selectedShape)
                 var y0 = selectedShape[1][1].y;
 
                 // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+
+                if (-y + x0 < 0 || -y + x0 > canvas.width - 10)
+                    return orig_shape;
+                if (x + y0 >= canvas.height - 10)
+                    return orig_shape; 
 
                 selectedShape[i][j].x = -y;
                 selectedShape[i][j].y = x;
@@ -475,25 +482,32 @@ function rotateShape_CCW(selectedShape)
                 selectedShape[i][j].x += x0;
                 selectedShape[i][j].y += y0;
 
-
             }
         }
     }
+    return selectedShape;
 }
 function rotateShape_CW(selectedShape)
 {
+    var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
     {
         for (let j = 0; j < 3; j++)
         {
             if(selectedShape[i][j] != undefined)
             {
+
                 var x = selectedShape[i][j].x - selectedShape[1][1].x;
                 var y = selectedShape[i][j].y - selectedShape[1][1].y;
                 var x0 = selectedShape[1][1].x;
                 var y0 = selectedShape[1][1].y;
 
-                // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+                console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+
+                if (y + x0 < 0 || y + x0 > canvas.width - 10)
+                    return orig_shape;
+                if (-x + y0 >= canvas.height - 10)
+                    return orig_shape; 
 
                 selectedShape[i][j].x = y;
                 selectedShape[i][j].y = -x;
@@ -501,10 +515,10 @@ function rotateShape_CW(selectedShape)
                 selectedShape[i][j].x += x0;
                 selectedShape[i][j].y += y0;
 
-
             }
         }
     }
+    return selectedShape;
 }
 function addToTetrisBlocks(selectedShape, tetrisBlocks)
 {
@@ -558,7 +572,7 @@ function checkLines(tetrisBlocks)
     }
     for (let i = 0; i < 4; i++)
     {
-        for (let height = 130; height > 0; height -= 10)
+        for (let height = canvas.height-10; height > 0; height -= 10)
         {
             if (tetrisBlocks[height] != undefined && tetrisBlocks[height+10] == undefined)
             {
@@ -583,8 +597,9 @@ function checkLines(tetrisBlocks)
 // Block diag collisions - DONE
 // Give one turn before drop stick - DONE
 // Drop it by level=speed - DONE
-// Rotate selectedShape
+// Rotate selectedShape - DONE
 // Clear up to 4 full rows - DONE
+// Reconcile the canvas size and resolution - DONE
 
 // More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
 
@@ -594,10 +609,9 @@ function checkLines(tetrisBlocks)
 // Don't let shapes spin into each other or out of the map
 
 /* User Interface */
-// Reconcile the canvas size and resolution
 // MUSIC!!!
 // Make the keys adequately responsive
-// Colors
+// Differentiate the Blocks colors
 
 
 var shapes = [];
@@ -615,11 +629,11 @@ function draw() {
 
     if (zPressed)
     {
-        rotateShape_CCW(selectedShape);
+        selectedShape = rotateShape_CCW(selectedShape);
     }
     if (xPressed)
     {
-        rotateShape_CW(selectedShape);
+        selectedShape = rotateShape_CW(selectedShape);
     }
 
     move(selectedShape, shapes); // Let the player move
