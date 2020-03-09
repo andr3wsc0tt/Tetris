@@ -21,7 +21,7 @@ var xPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
 var tetrisLength = 6; // canvas.width / brickWidth
-var dy = 0; // falling
+var dy = 10; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -632,6 +632,7 @@ function checkDead(selectedShape)
 // Don't let shapes spin into each other or out of the map - DONE
 // Die - DONE
 // TETRIS!!! - DONE 
+// MUSIC!!! - DONE
 
 // More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
 // Score
@@ -639,7 +640,6 @@ function checkDead(selectedShape)
 // Don't let shapes spin through other shapes
 
 /* User Interface */
-// MUSIC!!!
 // Make the keys adequately responsive
 // Differentiate the Blocks colors
 
@@ -648,6 +648,31 @@ var shapes = [];
 var tetrisBlocks = {};
 var selectedShape = null;
 oneTurn = 0; // Timer for how long you can to stay on a block before you stick
+
+function sound(src)
+{
+    this.sound = document.createElement("audio");
+    this.sound.id = "TetrisAudio";
+    this.sound.src = src;
+    this.sound.loop = true;
+    this.sound.addEventListener('ended', function(){
+        this.currentTime = 0;
+        this.play();
+    }, false);
+    this.sound.setAttribute("preload", "auto");
+    // this.sound.setAttribute("controls", "none");
+    // this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+}
+
+var MyMusic = new sound("./resources/Tetris.mp3")
+MyMusic.play();
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -664,11 +689,11 @@ function draw() {
 
     if (groundCollision(selectedShape) || selectedDrop(selectedShape, shapes)) // If the moving shape has landed
     {
-        if (oneTurn > 2)
+        if (oneTurn > 2) // Time between tetrinos touching and sticking.
         {    
-            tetrisBlocks = addToTetrisBlocks(selectedShape, tetrisBlocks);
-            clearedLines = checkLines(tetrisBlocks);
-            tetrisBlocks = rainDown(tetrisBlocks);    
+            tetrisBlocks = addToTetrisBlocks(selectedShape, tetrisBlocks); // Store the landed shape
+            clearedLines = checkLines(tetrisBlocks); // Clear the full rows
+            tetrisBlocks = rainDown(tetrisBlocks);  // Count the rows cleared
 
             if (clearedLines == 3)
                 alert("TETRIS");
