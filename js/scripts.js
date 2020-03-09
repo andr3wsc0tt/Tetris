@@ -10,8 +10,6 @@ var rotate0 = 0;
 
 console.log(canvas.width, canvas.height);
 
-canvas.width = 60;
-
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
@@ -171,7 +169,6 @@ function createShape(shape_name) {
     return row;
 }
 function drawShape(shape) {
-    console.log(shape.shape_name);
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (shape[i][j] != undefined)
@@ -322,8 +319,8 @@ function blockCollisionRight(selectedShape, tetrisBlocks)
                             {
                                 return true;
                             }
-                            else
-                                console.error(block.x+block.w, check_shape.x , block.y+block.h, check_shape.y+check_shape.h, block.y, check_shape.y);
+                            // else
+                            //     console.error(block.x+block.w, check_shape.x , block.y+block.h, check_shape.y+check_shape.h, block.y, check_shape.y);
                         }
                     }
                 }
@@ -548,32 +545,32 @@ function drawPlacedShapes(tetrisBlocks)
         }
     }
 }
-function checkTetris(tetrisBlocks)
+function checkLines(tetrisBlocks)
 {
-    for (var ys in tetrisBlocks) 
+    for (var ys in tetrisBlocks)
+    {
+        if (Object.values(tetrisBlocks[ys]).length == tetrisLength)
         {
-            console.log(ys);
-            if (Object.values(tetrisBlocks[ys]).length == tetrisLength) // Little Tetris - move every block ABOVE ys down (if there are multiple lines then )
-            {
-                var above_height = ys-10;
-                while (tetrisBlocks[above_height] != undefined)
-                {
-                    var height = above_height + 10;
-                    delete tetrisBlocks[height];
-                    tetrisBlocks[height] = tetrisBlocks[above_height];
-                    for (var xs in tetrisBlocks[height])
-                    {
-                        tetrisBlocks[height][xs].y += 10; 
-                    }
-
-                    above_height -= 10;
-
-                }
-
-                console.log(tetrisBlocks[ys]);
-                
-            }
+            console.log(tetrisBlocks[ys]);
+            delete tetrisBlocks[ys];
         }
+    
+    }
+
+    for (let height = 130; height > 0; height -= 10)
+    {
+        if (tetrisBlocks[height] != undefined && tetrisBlocks[height+10] == undefined)
+        {
+            console.log(tetrisBlocks[height], tetrisBlocks[height+10], height);
+            tetrisBlocks[height+10] = tetrisBlocks[height];
+            for (var xs in tetrisBlocks[height+10])
+            {
+                tetrisBlocks[height+10][xs].y += 10;
+            }
+            delete tetrisBlocks[height];
+        }
+    }
+
     return tetrisBlocks;
 }
 
@@ -625,8 +622,7 @@ function draw() {
         if (oneTurn > 2)
         {    
             tetrisBlocks = addToTetrisBlocks(selectedShape, tetrisBlocks);
-            // shapes.push(selectedShape); // Save it to the board
-            tetrisBlocks = checkTetris(tetrisBlocks);
+            tetrisBlocks = checkLines(tetrisBlocks);
             selectedShape = null; // Reset it
             oneTurn = 0;
         }
