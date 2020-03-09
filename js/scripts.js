@@ -672,7 +672,7 @@ function sound(src)
 }
 
 var MyMusic = new sound("./resources/Tetris.mp3")
-MyMusic.play();
+//MyMusic.play();
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
