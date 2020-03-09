@@ -4,12 +4,13 @@ var ctx = canvas.getContext('2d');
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-var x = 0;
-var y = 0;
 var rotate0 = 0;
 
 canvas.width = 200;
 canvas.height = 300;
+
+var x = canvas.width/2;
+var y = -10;
 
 var rightPressed = false;
 var leftPressed = false;
@@ -177,7 +178,7 @@ function drawShape(shape) {
         }
     }
 }
-function move(shape_item, shapes) {
+function move(shape_item, tetrisBlocks) {
     
     if (rightPressed && downPressed && blockDiagRight(shape_item, tetrisBlocks))
         return;
@@ -214,7 +215,15 @@ function move(shape_item, shapes) {
                     shape_item[i][j].y += 10;
                 }
             }
-}
+    if (zPressed)
+    {
+        selectedShape = rotateShape_CCW(selectedShape);
+    }
+    if (xPressed)
+    {
+        selectedShape = rotateShape_CW(selectedShape);
+    }
+}   
 function groundCollision(shape_item)
 {
     for (let i = 0; i < 3; i++)
@@ -286,6 +295,7 @@ function blockCollisionLeft(selectedShape, tetrisBlocks)
                         var check_shape = tetrisBlocks[ys][xs];
                         if (check_shape != undefined)
                         {
+                            console.log("EFT");
                             if ((block.x == check_shape.x+check_shape.w) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
                             {
                                 return true;
@@ -502,7 +512,7 @@ function rotateShape_CW(selectedShape)
                 var x0 = selectedShape[1][1].x;
                 var y0 = selectedShape[1][1].y;
 
-                console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+                // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
 
                 if (y + x0 < 0 || y + x0 > canvas.width - 10)
                     return orig_shape;
@@ -561,15 +571,20 @@ function drawPlacedShapes(tetrisBlocks)
 }
 function checkLines(tetrisBlocks)
 {
+    var num = 0;
     for (var ys in tetrisBlocks)
     {
         if (Object.values(tetrisBlocks[ys]).length == tetrisLength)
         {
-            console.log(tetrisBlocks[ys]);
+            num += 1;
             delete tetrisBlocks[ys];
         }
     
     }
+    return num;
+}
+function rainDown(tetrisBlocks)
+{
     for (let i = 0; i < 4; i++)
     {
         for (let height = canvas.height-20; height > 0; height -= 10)
@@ -588,6 +603,20 @@ function checkLines(tetrisBlocks)
     }
     return tetrisBlocks;
 }
+function checkDead(selectedShape)
+{
+    for (let i = 0; i < 3; i++)
+    {
+        for (let j = 0; j < 3; j++)
+        {
+            if (selectedShape[i][j] != undefined)
+            {
+                if (selectedShape[i][j].y <= 0)
+                    return true;
+            }
+        }
+    }
+}
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -600,13 +629,14 @@ function checkLines(tetrisBlocks)
 // Rotate selectedShape - DONE
 // Clear up to 4 full rows - DONE
 // Reconcile the canvas size and resolution - DONE
+// Don't let shapes spin into each other or out of the map - DONE
+// Die - DONE
+// TETRIS!!! - DONE 
 
 // More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
-
-// Die
 // Score
-// TETRIS!!!
-// Don't let shapes spin into each other or out of the map
+// Add the long piece
+// Don't let shapes spin through other shapes
 
 /* User Interface */
 // MUSIC!!!
@@ -621,24 +651,15 @@ oneTurn = 0; // Timer for how long you can to stay on a block before you stick
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var clearedLines = 0;
 
     if (selectedShape == null) // If there is no new shape, create one
     {
         selectedShape = createShape("RRRR-L");
     }
 
-    if (zPressed)
-    {
-        selectedShape = rotateShape_CCW(selectedShape);
-    }
-    if (xPressed)
-    {
-        selectedShape = rotateShape_CW(selectedShape);
-    }
-
-    move(selectedShape, shapes); // Let the player move
+    move(selectedShape, tetrisBlocks); // Let the player move
     drawShape(selectedShape); // Draw that movement
-
     drawPlacedShapes(tetrisBlocks);
 
     if (groundCollision(selectedShape) || selectedDrop(selectedShape, shapes)) // If the moving shape has landed
@@ -646,7 +667,15 @@ function draw() {
         if (oneTurn > 2)
         {    
             tetrisBlocks = addToTetrisBlocks(selectedShape, tetrisBlocks);
-            tetrisBlocks = checkLines(tetrisBlocks);
+            clearedLines = checkLines(tetrisBlocks);
+            tetrisBlocks = rainDown(tetrisBlocks);    
+
+            if (clearedLines == 3)
+                alert("TETRIS");
+
+            if (checkDead(selectedShape))
+                alert("GG");
+            
             selectedShape = null; // Reset it
             oneTurn = 0;
         }
