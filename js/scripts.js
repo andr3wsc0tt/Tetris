@@ -572,7 +572,7 @@ function checkLines(tetrisBlocks)
     }
     for (let i = 0; i < 4; i++)
     {
-        for (let height = canvas.height-10; height > 0; height -= 10)
+        for (let height = canvas.height-20; height > 0; height -= 10)
         {
             if (tetrisBlocks[height] != undefined && tetrisBlocks[height+10] == undefined)
             {
