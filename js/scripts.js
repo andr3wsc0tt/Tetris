@@ -77,20 +77,6 @@ class brick {
         this.shape_name = shape_;
     }
 
-    rotate(dir) {
-        if (dir == "right") {
-            var hold = this.h;
-            this.h = this.w;
-            this.w = hold;
-        }
-        else if (dir == "left") {
-            this.x = this.x + this.w - this.h;
-            var hold = this.h;
-            this.h = this.w;
-            this.w = hold;
-        }
-    }
-
 }
 function drawBrick(brick) {
     ctx.beginPath();
@@ -111,9 +97,6 @@ function shapeTest(i, j, shape_name)
     switch(shape_name){
         case "block":
             return (i > 0 && j > 0);
-            break;
-        case "cross":
-            return (i == 0 && j == 1) || (i == 1) || (i == 2 && j == 1);
             break;
         case "L":
             return (i < 3 && j == 1 || i == 2 && j == 2);
@@ -153,9 +136,6 @@ function createShape(shape_name) {
     switch (shape_name) {
         case "block":
             row = shapeTemplate("block", row);
-            break;
-        case "cross":
-            shapeTemplate("cross", row);
             break;
         case "L":
             shapeTemplate("L", row);
@@ -696,7 +676,7 @@ function checkDead(selectedShape)
 // Differentiate the Blocks colors
 
 
-var shapes = ["t", "s", "z", "L", "reverse-L", "block", "cross"];
+var shapes = ["t", "s", "z", "L", "reverse-L", "block"];
 var tetrisBlocks = {};
 var selectedShape = null;
 oneTurn = 0; // Timer for how long you can to stay on a block before you stick
