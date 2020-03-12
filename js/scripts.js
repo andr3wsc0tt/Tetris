@@ -18,9 +18,10 @@ var upPressed = false;
 var downPressed = false;
 var zPressed = false;
 var xPressed = false;
+var pPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
-var tetrisLength = 6; // canvas.width / brickWidth
+var tetrisLength = 20; // canvas.width / brickWidth
 var dy = 10; // falling
 
 function keyDownHandler(e) {
@@ -42,6 +43,9 @@ function keyDownHandler(e) {
     if (e.key == "KeyX" || e.key == "x") {
         xPressed = true;
     }
+    if (e.key == "KeyP" || e.key == "p"){
+        pPressed = true;
+    }
 }
 function keyUpHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -61,6 +65,9 @@ function keyUpHandler(e) {
     }
     if (e.key == "KeyX" || e.key == "x") {
         xPressed = false;
+    }
+    if (e.key == "KeyP" || e.key == "p"){
+        pPressed = false;
     }
 }
 class brick {
@@ -105,7 +112,7 @@ function shapeTest(i, j, shape_name)
 {
     switch(shape_name){
         case "block":
-            return true;
+            return (i > 1 && j > 1);
             break;
         case "cross":
             return (i == 0 && j == 1) || (i == 1) || (i == 2 && j == 1);
@@ -113,17 +120,17 @@ function shapeTest(i, j, shape_name)
         case "L":
             return (i < 3 && j == 1 || i == 2 && j == 2);
             break;
-        case "RR-L":
-            return (i == 1 && j < 3 || i == 0 && j == 2);
-            break;
-        case "RRR-L":
-            return (i < 3 && j == 1 || i == 0 && j == 0);
-            break;
-        case "RRRR-L":
-            return (i == 1 && j < 3 || i == 2 && j == 0);
-            break;
         case "reverse-L":
             return (i < 3 && j == 1 || i == 2 && j == 0);
+            break;
+        case "z":
+            return (i == 1 && j < 2 || i == 2 && j > 0);
+            break;
+        case "s":
+            return (i == 1 && j > 0 || i == 2 && j < 2);
+            break;
+        case "t":
+            return (i == 1 && j == 1 || i == 2);
             break;
 
     }
@@ -155,17 +162,17 @@ function createShape(shape_name) {
         case "L":
             shapeTemplate("L", row);
             break;
-        case "RR-L":
-            shapeTemplate("RR-L", row);
-            break;
-        case "RRR-L":
-            shapeTemplate("RRR-L", row);
-            break;
-        case "RRRR-L":
-            shapeTemplate("RRRR-L", row);
-            break;
         case "reverse-L":
             shapeTemplate("reverse-L", row);
+            break;
+        case "z":
+            shapeTemplate("z", row);
+            break;
+        case "s":
+            shapeTemplate("s", row);
+            break;
+        case "t":
+            shapeTemplate("t", row);
             break;
     }
     return row;
@@ -222,6 +229,10 @@ function move(shape_item, tetrisBlocks) {
     if (xPressed)
     {
         selectedShape = rotateShape_CW(selectedShape);
+    }
+    if (pPressed)
+    {
+        dy = Math.abs(dy - 10);
     }
 }   
 function groundCollision(shape_item)
@@ -295,13 +306,10 @@ function blockCollisionLeft(selectedShape, tetrisBlocks)
                         var check_shape = tetrisBlocks[ys][xs];
                         if (check_shape != undefined)
                         {
-                            console.log("EFT");
                             if ((block.x == check_shape.x+check_shape.w) && ((block.y+block.h) == (check_shape.y+check_shape.h)) && (block.y == check_shape.y))
                             {
                                 return true;
                             }
-                            else
-                                console.error(block.x,check_shape.x,block.x+block.w,check_shape.x+check_shape.w,block.y+block.h,check_shape.y);
                         }
                     }
                 }
@@ -538,7 +546,6 @@ function addToTetrisBlocks(selectedShape, tetrisBlocks)
         {
             if (selectedShape[i][j] != undefined)
             {
-                console.error(selectedShape[i][j].x, selectedShape[i][j].y);
                 if (selectedShape[i][j].y in tetrisBlocks)
                 {
                     tetrisBlocks[selectedShape[i][j].y][selectedShape[i][j].x] = selectedShape[i][j];
@@ -644,7 +651,7 @@ function checkDead(selectedShape)
 // Differentiate the Blocks colors
 
 
-var shapes = [];
+var shapes = ["t", "s", "z", "L", "reverse-L", "block", "cross"];
 var tetrisBlocks = {};
 var selectedShape = null;
 oneTurn = 0; // Timer for how long you can to stay on a block before you stick
@@ -680,7 +687,8 @@ function draw() {
 
     if (selectedShape == null) // If there is no new shape, create one
     {
-        selectedShape = createShape("RRRR-L");
+        var randShape = shapes[Math.floor(Math.random() * shapes.length)];
+        selectedShape = createShape(randShape);
     }
 
     move(selectedShape, tetrisBlocks); // Let the player move
