@@ -476,7 +476,13 @@ function rotateShape_CCW(selectedShape, tetrisBlocks)
     /*
         set a point P as the centroid
     */
+    var pX = selectedShape[1][1].x + selectedShape[1][1].w/2; // middle point x
+    var pY = selectedShape[1][1].y + selectedShape[1][1].h/2; // middle point y
 
+    // get mid point of selected and centroid (+width/2, +height/2)
+    // shift selected left and up by centroid mid_x and mid_y
+    // flip and reverse
+    // shift selected right and down by centroid mid_x and mid_y
 
     var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
@@ -485,10 +491,17 @@ function rotateShape_CCW(selectedShape, tetrisBlocks)
         {
             if(selectedShape[i][j] != undefined)
             {
-                var x = selectedShape[i][j].x - selectedShape[1][1].x;
-                var y = selectedShape[i][j].y - selectedShape[1][1].y;
-                var x0 = selectedShape[1][1].x;
-                var y0 = selectedShape[1][1].y;
+                var psW = selectedShape[i][j].w/2;
+                var psH = selectedShape[i][j].h/2;
+
+                var SSx = selectedShape[i][j].x + psW;
+                var SSy = selectedShape[i][j].y + psH;
+
+                var x = SSx - pX; // translate SSx left corner
+                var y = SSy - pY; // translate SSy left corner
+
+                var x0 = pX; // top left corner x of SS
+                var y0 = pY; // top left corner y of SS
 
                 // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
 
@@ -509,11 +522,11 @@ function rotateShape_CCW(selectedShape, tetrisBlocks)
                     }
                 }
 
-                selectedShape[i][j].x = -y;
-                selectedShape[i][j].y = x;
+                selectedShape[i][j].x = -y - psW; // Reverse and Flip
+                selectedShape[i][j].y = x - psH; // Flip
 
-                selectedShape[i][j].x += x0;
-                selectedShape[i][j].y += y0;
+                selectedShape[i][j].x += x0; // Push back to original x
+                selectedShape[i][j].y += y0; // Push back to original y
 
             }
         }
@@ -526,8 +539,8 @@ function rotateShape_CW(selectedShape)
         set a point P as the centroid
     */
 
-    var pX = selectedShape[1][1].x + (selectedShape[1][1].width/2);
-    var pY = selectedShape[1][1].y + (selectedShape[1][1].height/2);
+    var pX = selectedShape[1][1].x + (selectedShape[1][1].w/2);
+    var pY = selectedShape[1][1].y + (selectedShape[1][1].h/2);
 
     var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
@@ -537,10 +550,17 @@ function rotateShape_CW(selectedShape)
             if(selectedShape[i][j] != undefined)
             {
 
-                var x = selectedShape[i][j].x - selectedShape[1][1].x;
-                var y = selectedShape[i][j].y - selectedShape[1][1].y;
-                var x0 = selectedShape[1][1].x;
-                var y0 = selectedShape[1][1].y;
+                var psW = selectedShape[i][j].w/2;
+                var psH = selectedShape[i][j].h/2;
+
+                var SSx = selectedShape[i][j].x + psW;
+                var SSy = selectedShape[i][j].y + psH;
+
+                var x = SSx - pX; // translate SSx left corner
+                var y = SSy - pY; // translate SSy left corner
+                
+                var x0 = pX; // top left corner x of SS
+                var y0 = pY; // top left corner y of SS
 
                 // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
 
@@ -561,8 +581,8 @@ function rotateShape_CW(selectedShape)
                     }
                 }
 
-                selectedShape[i][j].x = y;
-                selectedShape[i][j].y = -x;
+                selectedShape[i][j].x = y - psW;
+                selectedShape[i][j].y = -x - psH;
 
                 selectedShape[i][j].x += x0;
                 selectedShape[i][j].y += y0;
