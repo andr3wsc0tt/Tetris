@@ -4,8 +4,6 @@ var ctx = canvas.getContext('2d');
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-var rotate0 = 0;
-
 canvas.width = 200;
 canvas.height = 300;
 
@@ -22,7 +20,7 @@ var pPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
 var tetrisLength = 20; // canvas.width / brickWidth
-var dy = 10; // falling
+var dy = 0; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -112,7 +110,7 @@ function shapeTest(i, j, shape_name)
 {
     switch(shape_name){
         case "block":
-            return (i > 1 && j > 1);
+            return (i > 0 && j > 0);
             break;
         case "cross":
             return (i == 0 && j == 1) || (i == 1) || (i == 2 && j == 1);
@@ -224,11 +222,11 @@ function move(shape_item, tetrisBlocks) {
             }
     if (zPressed)
     {
-        selectedShape = rotateShape_CCW(selectedShape);
+        selectedShape = rotateShape_CCW(selectedShape, tetrisBlocks);
     }
     if (xPressed)
     {
-        selectedShape = rotateShape_CW(selectedShape);
+        selectedShape = rotateShape_CW(selectedShape, tetrisBlocks);
     }
     if (pPressed)
     {
@@ -473,8 +471,14 @@ function perTurnMove(selectedShape)
         }
     }
 }
-function rotateShape_CCW(selectedShape)
+function rotateShape_CCW(selectedShape, tetrisBlocks)
 {
+    /*
+        set a point P as the centroid
+        loop through every placed shape and make sure there are no collisions.
+    */
+
+
     var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
     {
@@ -493,6 +497,18 @@ function rotateShape_CCW(selectedShape)
                     return orig_shape;
                 if (x + y0 >= canvas.height - 10)
                     return orig_shape; 
+                
+                for (var ys in tetrisBlocks)
+                {
+                    for (var xs in tetrisBlocks[ys])
+                    {
+                        var placedBlock = tetrisBlocks[ys][xs];
+                        
+                        if (-y + x0 == placedBlock.x && x + y0 == placedBlock.y)
+                            return orig_shape;
+
+                    }
+                }
 
                 selectedShape[i][j].x = -y;
                 selectedShape[i][j].y = x;
@@ -507,6 +523,11 @@ function rotateShape_CCW(selectedShape)
 }
 function rotateShape_CW(selectedShape)
 {
+    /*
+        set a point P as the centroid
+        loop through every placed shape and make sure there are no collisions.
+    */
+
     var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
     {
@@ -526,6 +547,18 @@ function rotateShape_CW(selectedShape)
                     return orig_shape;
                 if (-x + y0 >= canvas.height - 10)
                     return orig_shape; 
+                
+                for (var ys in tetrisBlocks)
+                {
+                    for (var xs in tetrisBlocks[ys])
+                    {
+                        var placedBlock = tetrisBlocks[ys][xs];
+                        
+                        if (y + x0 == placedBlock.x && -x + y0 == placedBlock.y)
+                            return orig_shape;
+
+                    }
+                }
 
                 selectedShape[i][j].x = y;
                 selectedShape[i][j].y = -x;
@@ -640,11 +673,13 @@ function checkDead(selectedShape)
 // Die - DONE
 // TETRIS!!! - DONE 
 // MUSIC!!! - DONE
-
-// More Shapes - 4 shapes only 3x3. The long shape needs to get made and considered in all logic :)
+// More Shapes - 4 shapes only 3x3. - DONE
+ 
+// The long shape needs to get made and considered in all logic :)
 // Score
 // Add the long piece
 // Don't let shapes spin through other shapes
+// Make the spin central to the specific shape
 
 /* User Interface */
 // Make the keys adequately responsive
