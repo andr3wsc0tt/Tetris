@@ -20,7 +20,7 @@ var pPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
 var tetrisLength = 20; // canvas.width / brickWidth
-var dy = 0; // falling
+var dy = 10; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -94,13 +94,17 @@ class brick {
 
 class Shape {
 
-
-    constructor(shape_, dim_) {
+    constructor(shape_) {
         this.shape_name = shape_;
-        this.dim = dim_
+
+        if (this.shape_name == "I")
+            this.dim = 4;
+        else
+            this.dim = 3;
+
         this.row = [];
 
-        this.createShape(this.shape_name);
+        this.createShape();
     }
 
     shapeTest = function (i, j) {
@@ -630,7 +634,7 @@ function draw() {
     if (selectedShape == null) // If there is no new shape, create one
     {
         var randShape = shapes[Math.floor(Math.random() * shapes.length)];
-        selectedShape = new Shape(randShape, 3);
+        selectedShape = new Shape(randShape);
     }
 
     selectedShape.move(tetrisBlocks); // Let the player move
