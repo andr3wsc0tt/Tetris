@@ -147,28 +147,27 @@ class Shape {
     }
 
     createShape = function () {
-        var row = [];
         switch (this.shape_name) {
             case "block":
-                this.buildShape("block", this.row);
+                this.buildShape();
                 break;
             case "L":
-                this.buildShape("L", this.row);
+                this.buildShape();
                 break;
             case "reverse-L":
-                this.buildShape("reverse-L", this.row);
+                this.buildShape();
                 break;
             case "z":
-                this.buildShape("z", this.row);
+                this.buildShape();
                 break;
             case "s":
-                this.buildShape("s", this.row);
+                this.buildShape();
                 break;
             case "t":
-                this.buildShape("t", this.row);
+                this.buildShape();
                 break;
             case "I":
-                this.buildShape("I", this.row);
+                this.buildShape();
                 break;
         }
     }
@@ -406,7 +405,7 @@ class Shape {
         var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
         var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
 
-        var orig_shape = JSON.parse(JSON.stringify(this.row));
+        const orig_shape = JSON.parse(JSON.stringify(this.row));
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
@@ -423,16 +422,25 @@ class Shape {
                     var y0 = pY;
 
                     if (-y + x0 < 0 || -y + x0 > canvas.width - 10)
-                        return orig_shape;
+                    {
+                        this.row = orig_shape;
+                        return;
+                    }
                     if (x + y0 >= canvas.height - 10)
-                        return orig_shape;
+                    {
+                        this.row = orig_shape;
+                        return;
+                    }
 
                     for (var ys in tetrisBlocks) {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
 
                             if (-y + x0 == placedBlock.x && x + y0 == placedBlock.y)
-                                return orig_shape;
+                            {
+                                this.row = orig_shape;
+                                return;
+                            }
 
                         }
                     }
@@ -446,7 +454,6 @@ class Shape {
                 }
             }
         }
-        return this.row;
     }
     rotateShape_CW = function () {
         /*
@@ -456,7 +463,7 @@ class Shape {
         var pX = this.row[1][1].x + (this.row[1][1].w / 2);
         var pY = this.row[1][1].y + (this.row[1][1].h / 2);
 
-        var orig_shape = JSON.parse(JSON.stringify(this.row));
+        const orig_shape = JSON.parse(JSON.stringify(this.row));
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
@@ -474,16 +481,25 @@ class Shape {
                     var y0 = pY;
 
                     if (y + x0 < 0 || y + x0 > canvas.width - 10)
-                        return orig_shape;
+                    {
+                        this.row = orig_shape;
+                        return;
+                    }
                     if (-x + y0 >= canvas.height - 10)
-                        return orig_shape;
+                    {
+                        this.row = orig_shape;
+                        return;
+                    }
 
                     for (var ys in tetrisBlocks) {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
 
                             if (y + x0 == placedBlock.x && -x + y0 == placedBlock.y)
-                                return orig_shape;
+                            {
+                                this.row = orig_shape;
+                                return;
+                            }
 
                         }
                     }
@@ -497,7 +513,6 @@ class Shape {
                 }
             }
         }
-        return this.row;
     }
     addToTetrisBlocks = function (tetrisBlocks) {
         for (let i = 0; i < this.dim; i++) {
