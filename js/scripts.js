@@ -475,7 +475,6 @@ function rotateShape_CCW(selectedShape, tetrisBlocks)
 {
     /*
         set a point P as the centroid
-        loop through every placed shape and make sure there are no collisions.
     */
 
 
@@ -525,8 +524,10 @@ function rotateShape_CW(selectedShape)
 {
     /*
         set a point P as the centroid
-        loop through every placed shape and make sure there are no collisions.
     */
+
+    var pX = selectedShape[1][1].x + (selectedShape[1][1].width/2);
+    var pY = selectedShape[1][1].y + (selectedShape[1][1].height/2);
 
     var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
@@ -674,11 +675,11 @@ function checkDead(selectedShape)
 // TETRIS!!! - DONE 
 // MUSIC!!! - DONE
 // More Shapes - 4 shapes only 3x3. - DONE
- 
+// Don't let shapes spin through other shapes 
+
 // The long shape needs to get made and considered in all logic :)
 // Score
 // Add the long piece
-// Don't let shapes spin through other shapes
 // Make the spin central to the specific shape
 
 /* User Interface */
