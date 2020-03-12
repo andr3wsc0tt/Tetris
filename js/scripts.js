@@ -20,7 +20,7 @@ var pPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
 var tetrisLength = 20; // canvas.width / brickWidth
-var dy = 0; // falling
+var dy = 10; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -473,16 +473,8 @@ function perTurnMove(selectedShape)
 }
 function rotateShape_CCW(selectedShape, tetrisBlocks)
 {
-    /*
-        set a point P as the centroid
-    */
     var pX = selectedShape[1][1].x + selectedShape[1][1].w/2; // middle point x
     var pY = selectedShape[1][1].y + selectedShape[1][1].h/2; // middle point y
-
-    // get mid point of selected and centroid (+width/2, +height/2)
-    // shift selected left and up by centroid mid_x and mid_y
-    // flip and reverse
-    // shift selected right and down by centroid mid_x and mid_y
 
     var orig_shape = JSON.parse(JSON.stringify(selectedShape));
     for (let i = 0; i < 3; i++)
@@ -497,13 +489,11 @@ function rotateShape_CCW(selectedShape, tetrisBlocks)
                 var SSx = selectedShape[i][j].x + psW;
                 var SSy = selectedShape[i][j].y + psH;
 
-                var x = SSx - pX; // translate SSx left corner
-                var y = SSy - pY; // translate SSy left corner
+                var x = SSx - pX; 
+                var y = SSy - pY; 
 
-                var x0 = pX; // top left corner x of SS
-                var y0 = pY; // top left corner y of SS
-
-                // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+                var x0 = pX; 
+                var y0 = pY; 
 
                 if (-y + x0 < 0 || -y + x0 > canvas.width - 10)
                     return orig_shape;
@@ -522,11 +512,11 @@ function rotateShape_CCW(selectedShape, tetrisBlocks)
                     }
                 }
 
-                selectedShape[i][j].x = -y - psW; // Reverse and Flip
-                selectedShape[i][j].y = x - psH; // Flip
+                selectedShape[i][j].x = -y - psW; 
+                selectedShape[i][j].y = x - psH; 
 
-                selectedShape[i][j].x += x0; // Push back to original x
-                selectedShape[i][j].y += y0; // Push back to original y
+                selectedShape[i][j].x += x0; 
+                selectedShape[i][j].y += y0; 
 
             }
         }
@@ -556,13 +546,11 @@ function rotateShape_CW(selectedShape)
                 var SSx = selectedShape[i][j].x + psW;
                 var SSy = selectedShape[i][j].y + psH;
 
-                var x = SSx - pX; // translate SSx left corner
-                var y = SSy - pY; // translate SSy left corner
+                var x = SSx - pX; 
+                var y = SSy - pY; 
                 
-                var x0 = pX; // top left corner x of SS
-                var y0 = pY; // top left corner y of SS
-
-                // console.log(selectedShape[1][1].x, selectedShape[1][1].y, selectedShape[i][j].x, selectedShape[i][j].y, x, y);
+                var x0 = pX; 
+                var y0 = pY; 
 
                 if (y + x0 < 0 || y + x0 > canvas.width - 10)
                     return orig_shape;
@@ -695,15 +683,16 @@ function checkDead(selectedShape)
 // TETRIS!!! - DONE 
 // MUSIC!!! - DONE
 // More Shapes - 4 shapes only 3x3. - DONE
-// Don't let shapes spin through other shapes 
+// Don't let shapes spin through other shapes - DONE
+// Spins from the center of a 3x3 piece - Done
 
+// Add the long piece
 // The long shape needs to get made and considered in all logic :)
 // Score
-// Add the long piece
 // Make the spin central to the specific shape
 
 /* User Interface */
-// Make the keys adequately responsive
+// Make the keys adequately responsive!!!
 // Differentiate the Blocks colors
 
 
