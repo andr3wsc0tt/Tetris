@@ -107,6 +107,25 @@ class Shape {
         this.createShape();
     }
 
+    copyMe = function()
+    {
+        var retShape = [];
+        for (let i = 0; i < this.dim; i++)
+        {
+            retShape[i] = [];
+            var col = [];
+            for(let j = 0; j < this.dim; j++)
+            {
+                if (this.row[i][j] != undefined)
+                {
+                    col[i] = new brick(this.row[i][j].x, this.row[i][j].y, this.row[i][j].w, this.row[i][j].h);
+                }
+            }
+            retShape[i].push(col);
+        }
+        return retShape;
+    }
+
     shapeTest = function (i, j) {
         switch (this.shape_name) {
             case "block":
@@ -175,8 +194,9 @@ class Shape {
     draw = function () {
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
-                if (this.row[i][j] != undefined)
+                if (this.row[i][j] != undefined) {
                     this.row[i][j].drawBrick();
+                }
             }
         }
     }
@@ -217,10 +237,10 @@ class Shape {
                         this.row[i][j].y += 10;
                 }
             }
-        if (zPressed) {
+        if (!this.checkRotateShape_CCW() && zPressed) {
             this.rotateShape_CCW(tetrisBlocks);
         }
-        if (xPressed) {
+        if (!this.checkRotateShape_CW() && xPressed) {
             this.rotateShape_CW(tetrisBlocks);
         }
         if (pPressed) {
@@ -405,7 +425,10 @@ class Shape {
         var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
         var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
 
-        const orig_shape = JSON.parse(JSON.stringify(this.row));
+        // const orig_shape = this.copyMe();
+
+        // console.log(orig_shape);
+
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
@@ -420,30 +443,6 @@ class Shape {
 
                     var x0 = pX;
                     var y0 = pY;
-
-                    if (-y + x0 < 0 || -y + x0 > canvas.width - 10)
-                    {
-                        this.row = orig_shape;
-                        return;
-                    }
-                    if (x + y0 >= canvas.height - 10)
-                    {
-                        this.row = orig_shape;
-                        return;
-                    }
-
-                    for (var ys in tetrisBlocks) {
-                        for (var xs in tetrisBlocks[ys]) {
-                            var placedBlock = tetrisBlocks[ys][xs];
-
-                            if (-y + x0 == placedBlock.x && x + y0 == placedBlock.y)
-                            {
-                                this.row = orig_shape;
-                                return;
-                            }
-
-                        }
-                    }
 
                     this.row[i][j].x = -y - psW;
                     this.row[i][j].y = x - psH;
@@ -455,15 +454,52 @@ class Shape {
             }
         }
     }
-    rotateShape_CW = function () {
-        /*
-            set a point P as the centroid
-        */
+    checkRotateShape_CCW = function (tetrisBlocks) {
+        var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
+        var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
+
+        for (let i = 0; i < this.dim; i++) {
+            for (let j = 0; j < this.dim; j++) {
+                if (this.row[i][j] != undefined) {
+                    var psW = this.row[i][j].w / 2;
+                    var psH = this.row[i][j].h / 2;
+
+                    var SSx = this.row[i][j].x + psW;
+                    var SSy = this.row[i][j].y + psH;
+
+                    var x = SSx - pX;
+                    var y = SSy - pY;
+
+                    var x0 = pX;
+                    var y0 = pY;
+
+                    if (-y + x0 < 0 || -y + x0 > canvas.width - 10) {
+                        return true;
+                    }
+                    if (x + y0 >= canvas.height - 10) {
+                        return true;
+                    }
+
+                    for (var ys in tetrisBlocks) {
+                        for (var xs in tetrisBlocks[ys]) {
+                            var placedBlock = tetrisBlocks[ys][xs];
+
+                            if (-y + x0 == placedBlock.x && x + y0 == placedBlock.y) {
+                                return true;
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    checkRotateShape_CW = function () {
 
         var pX = this.row[1][1].x + (this.row[1][1].w / 2);
         var pY = this.row[1][1].y + (this.row[1][1].h / 2);
 
-        const orig_shape = JSON.parse(JSON.stringify(this.row));
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
@@ -480,29 +516,49 @@ class Shape {
                     var x0 = pX;
                     var y0 = pY;
 
-                    if (y + x0 < 0 || y + x0 > canvas.width - 10)
-                    {
-                        this.row = orig_shape;
-                        return;
+                    if (y + x0 < 0 || y + x0 > canvas.width - 10) {
+                        return true;
                     }
-                    if (-x + y0 >= canvas.height - 10)
-                    {
-                        this.row = orig_shape;
-                        return;
+                    if (-x + y0 >= canvas.height - 10) {
+                        return true;
                     }
 
                     for (var ys in tetrisBlocks) {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
 
-                            if (y + x0 == placedBlock.x && -x + y0 == placedBlock.y)
-                            {
-                                this.row = orig_shape;
-                                return;
+                            if (y + x0 == placedBlock.x && -x + y0 == placedBlock.y) {
+                                return true;
                             }
 
                         }
                     }
+
+                }
+            }
+        }
+        return false;
+    }
+    rotateShape_CW = function () {
+
+        var pX = this.row[1][1].x + (this.row[1][1].w / 2);
+        var pY = this.row[1][1].y + (this.row[1][1].h / 2);
+
+        for (let i = 0; i < this.dim; i++) {
+            for (let j = 0; j < this.dim; j++) {
+                if (this.row[i][j] != undefined) {
+
+                    var psW = this.row[i][j].w / 2;
+                    var psH = this.row[i][j].h / 2;
+
+                    var SSx = this.row[i][j].x + psW;
+                    var SSy = this.row[i][j].y + psH;
+
+                    var x = SSx - pX;
+                    var y = SSy - pY;
+
+                    var x0 = pX;
+                    var y0 = pY;
 
                     this.row[i][j].x = y - psW;
                     this.row[i][j].y = -x - psH;
