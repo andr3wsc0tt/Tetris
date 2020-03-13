@@ -1,6 +1,8 @@
 var canvas = document.getElementById('Tetris-Canvas');
 var ctx = canvas.getContext('2d');
 
+
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
@@ -14,8 +16,8 @@ var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
-var zPressed = false;
 var xPressed = false;
+var cPressed = false;
 var pPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
@@ -35,11 +37,11 @@ function keyDownHandler(e) {
     if (e.key == "Down" || e.key == "ArrowDown") {
         downPressed = true;
     }
-    if (e.key == "KeyZ" || e.key == "z") {
-        zPressed = true;
-    }
     if (e.key == "KeyX" || e.key == "x") {
         xPressed = true;
+    }
+    if (e.key == "KeyC" || e.key == "c") {
+        cPressed = true;
     }
     if (e.key == "KeyP" || e.key == "p") {
         pPressed = true;
@@ -58,11 +60,11 @@ function keyUpHandler(e) {
     if (e.key == "Down" || e.key == "ArrowDown") {
         downPressed = false;
     }
-    if (e.key == "KeyZ" || e.key == "z") {
-        zPressed = false;
-    }
     if (e.key == "KeyX" || e.key == "x") {
         xPressed = false;
+    }
+    if (e.key == "KeyC" || e.key == "c") {
+        cPressed = false;
     }
     if (e.key == "KeyP" || e.key == "p") {
         pPressed = false;
@@ -202,8 +204,11 @@ class Shape {
     }
 
     move = function (tetrisBlocks) {
+
         if (rightPressed && downPressed && this.blockDiagRight(tetrisBlocks))
+        {
             return;
+        }
 
         if (rightPressed && !this.rightCollision() && !leftPressed && !this.blockCollisionRight(tetrisBlocks))
             for (let i = 0; i < this.dim; i++) {
@@ -214,15 +219,19 @@ class Shape {
             }
 
         if (leftPressed && downPressed && this.blockDiagLeft(tetrisBlocks))
+        {
             return;
-
+        }
+        
         if (leftPressed && !this.leftCollision() && !rightPressed && !this.blockCollisionLeft(tetrisBlocks))
+        {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
                         this.row[i][j].x -= 10;
                 }
             }
+        }
         if (upPressed)
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
@@ -230,22 +239,28 @@ class Shape {
                         this.row[i][j].y -= 10;
                 }
             }
+            
         if (downPressed && !this.groundCollision() && !this.blockCollisionTop(tetrisBlocks))
+        {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
                         this.row[i][j].y += 10;
                 }
             }
-        if (!this.checkRotateShape_CCW(tetrisBlocks) && zPressed) {
+        }
+        
+        if (xPressed && !this.checkRotateShape_CCW(tetrisBlocks)) {
             this.rotateShape_CCW();
         }
-        if (!this.checkRotateShape_CW(tetrisBlocks) && xPressed) {
+    
+        if (cPressed && !this.checkRotateShape_CW(tetrisBlocks)) {
             this.rotateShape_CW();
         }
         if (pPressed) {
             dy = Math.abs(dy - 10);
         }
+        
     }
     groundCollision = function () {
         for (let i = 0; i < this.dim; i++) {
@@ -307,6 +322,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
     blockCollisionRight = function (tetrisBlocks) {
         for (let selected_y = 0; selected_y < this.dim; selected_y++) {
@@ -329,6 +345,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
     blockCollisionTop = function (stayShapes) {
         for (let selected_y = 0; selected_y < this.dim; selected_y++) {
@@ -349,6 +366,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
     blockDiagLeft = function (stayShapes) {
 
@@ -370,6 +388,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
     blockDiagRight = function (stayShapes) {
 
@@ -391,6 +410,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
     selectedDrop = function (stayShapes) {
 
@@ -412,6 +432,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
     perTurnMove = function (dropSpeed) {
         dropSpeed++;
@@ -710,6 +731,7 @@ class Shape {
                 }
             }
         }
+        return false;
     }
 }
 
@@ -813,7 +835,7 @@ var MyMusic = new sound("./resources/Tetris.mp3")
 
 
 var dropSpeed = 0;
-function draw() {
+function drawGame() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     var clearedLines = 0;
@@ -852,8 +874,8 @@ function draw() {
         oneTurn = 0;
     }
 
-    zPressed = false;
     xPressed = false;
+    cPressed = false;
 }
 
-setInterval(draw, 125); // chunky movement
+setInterval(drawGame, 125); // chunky movement
