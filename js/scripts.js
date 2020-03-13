@@ -237,11 +237,11 @@ class Shape {
                         this.row[i][j].y += 10;
                 }
             }
-        if (!this.checkRotateShape_CCW() && zPressed) {
-            this.rotateShape_CCW(tetrisBlocks);
+        if (!this.checkRotateShape_CCW(tetrisBlocks) && zPressed) {
+            this.rotateShape_CCW();
         }
-        if (!this.checkRotateShape_CW() && xPressed) {
-            this.rotateShape_CW(tetrisBlocks);
+        if (!this.checkRotateShape_CW(tetrisBlocks) && xPressed) {
+            this.rotateShape_CW();
         }
         if (pPressed) {
             dy = Math.abs(dy - 10);
@@ -413,15 +413,23 @@ class Shape {
             }
         }
     }
-    perTurnMove = function () {
-        for (let i = 0; i < this.dim; i++) {
-            for (let j = 0; j < this.dim; j++) {
-                if (this.row[i][j] != undefined)
-                    this.row[i][j].y += dy;
+    perTurnMove = function (dropSpeed) {
+        dropSpeed++;
+        if (dropSpeed == 10)
+        {
+            for (let i = 0; i < this.dim; i++) {
+                for (let j = 0; j < this.dim; j++) {
+                    if (this.row[i][j] != undefined)
+                    {
+                        this.row[i][j].y += dy;
+                    }
+                }
             }
+            dropSpeed = 0;
         }
+        return dropSpeed;
     }
-    rotateShape_CCW = function (tetrisBlocks) {
+    rotateShape_CCW = function () {
         var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
         var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
 
@@ -506,7 +514,7 @@ class Shape {
             }
 
         }
-
+        
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
@@ -528,12 +536,12 @@ class Shape {
                     if (x + y0 >= canvas.height - 10) {
                         return true;
                     }
-
+                    
                     for (var ys in tetrisBlocks) {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
-
-                            if (-y + x0 == placedBlock.x && x + y0 == placedBlock.y) {
+                            
+                            if (-y -psW + x0 == placedBlock.x && x - psH + y0 == placedBlock.y) {
                                 return true;
                             }
 
@@ -544,7 +552,7 @@ class Shape {
         }
         return false;
     }
-    checkRotateShape_CW = function () {
+    checkRotateShape_CW = function (tetrisBlocks) {
 
         if(this.shape_name == "block")
             return true;
@@ -605,7 +613,7 @@ class Shape {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
 
-                            if (y + x0 == placedBlock.x && -x + y0 == placedBlock.y) {
+                            if (y -psW + x0 == placedBlock.x && -x -psH + y0 == placedBlock.y) {
                                 return true;
                             }
 
@@ -767,7 +775,6 @@ function rainDown(tetrisBlocks) {
 
 // Score
 
-
 /* User Interface */
 // Make the keys adequately responsive!!!
 // Differentiate the Blocks colors
@@ -803,14 +810,15 @@ function sound(src) {
 var MyMusic = new sound("./resources/Tetris.mp3")
 //MyMusic.play();
 
+
+var dropSpeed = 0;
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     var clearedLines = 0;
-
     if (selectedShape == null) // If there is no new shape, create one
     {
         var randShape = shapes[Math.floor(Math.random() * shapes.length)];
-        selectedShape = new Shape("I");
+        selectedShape = new Shape(randShape);
     }
 
     selectedShape.move(tetrisBlocks); // Let the player move
@@ -838,9 +846,9 @@ function draw() {
             oneTurn += 1;
     }
     else {
-        selectedShape.perTurnMove(); // Drop by a preset amount
+        dropSpeed = selectedShape.perTurnMove(dropSpeed); // Drop by a preset amount
         oneTurn = 0;
     }
 }
 
-setInterval(draw, 200); // chunky movement
+setInterval(draw, 50); // chunky movement
