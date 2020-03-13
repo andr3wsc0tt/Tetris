@@ -425,9 +425,30 @@ class Shape {
         var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
         var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
 
-        // const orig_shape = this.copyMe();
+        if (this.shape_name == "I")
+        {
+            if (this.row[1][0] != undefined)
+            {
+                pX = this.row[1][2].x;
+                pY = this.row[1][2].y + this.row[1][2].h;
+            }
+            else if (this.row[0][2] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[2][0] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[0][1] != undefined)
+            {
+                pX = this.row[2][1].x + this.row[2][1].w;
+                pY = this.row[2][1].y;
+            }
 
-        // console.log(orig_shape);
+        }
 
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
@@ -455,8 +476,36 @@ class Shape {
         }
     }
     checkRotateShape_CCW = function (tetrisBlocks) {
+        if(this.shape_name == "block")
+            return true;
+
         var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
         var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
+
+        if (this.shape_name == "I")
+        {
+            if (this.row[1][0] != undefined)
+            {
+                pX = this.row[1][2].x;
+                pY = this.row[1][2].y + this.row[1][2].h;
+            }
+            else if (this.row[0][2] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[2][0] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[0][1] != undefined)
+            {
+                pX = this.row[2][1].x + this.row[2][1].w;
+                pY = this.row[2][1].y;
+            }
+
+        }
 
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
@@ -497,8 +546,37 @@ class Shape {
     }
     checkRotateShape_CW = function () {
 
+        if(this.shape_name == "block")
+            return true;
+
         var pX = this.row[1][1].x + (this.row[1][1].w / 2);
         var pY = this.row[1][1].y + (this.row[1][1].h / 2);
+
+        if (this.shape_name == "I")
+        {
+            if (this.row[1][0] != undefined)
+            {
+                pX = this.row[1][2].x;
+                pY = this.row[1][2].y + this.row[1][2].h;
+            }
+            else if (this.row[0][2] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[2][0] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[0][1] != undefined)
+            {
+                pX = this.row[2][1].x + this.row[2][1].w;
+                pY = this.row[2][1].y;
+            }
+
+        }
+
 
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
@@ -543,6 +621,32 @@ class Shape {
 
         var pX = this.row[1][1].x + (this.row[1][1].w / 2);
         var pY = this.row[1][1].y + (this.row[1][1].h / 2);
+
+        if (this.shape_name == "I")
+        {
+            if (this.row[1][0] != undefined)
+            {
+                pX = this.row[1][2].x;
+                pY = this.row[1][2].y + this.row[1][2].h;
+            }
+            else if (this.row[0][2] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[2][0] != undefined)
+            {
+                pX = this.row[2][2].x;
+                pY = this.row[2][2].y;
+            }
+            else if (this.row[0][1] != undefined)
+            {
+                pX = this.row[2][1].x + this.row[2][1].w;
+                pY = this.row[2][1].y;
+            }
+
+        }
+
 
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
@@ -659,15 +763,16 @@ function rainDown(tetrisBlocks) {
 // Spins from the center of a 3x3 piece - DONE
 // Add the long piece - DONE
 // The long shape needs to get made and considered in all logic :) - DONE
+// Make the spin central to the specific shape - DONE
 
 // Score
-// Make the spin central to the specific shape
+
 
 /* User Interface */
 // Make the keys adequately responsive!!!
 // Differentiate the Blocks colors
 // Make the cleared blocks blink!
-
+// Make the square spin?
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
 var tetrisBlocks = {};
@@ -705,7 +810,7 @@ function draw() {
     if (selectedShape == null) // If there is no new shape, create one
     {
         var randShape = shapes[Math.floor(Math.random() * shapes.length)];
-        selectedShape = new Shape(randShape);
+        selectedShape = new Shape("I");
     }
 
     selectedShape.move(tetrisBlocks); // Let the player move
