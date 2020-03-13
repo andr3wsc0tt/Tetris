@@ -814,6 +814,7 @@ var MyMusic = new sound("./resources/Tetris.mp3")
 
 var dropSpeed = 0;
 function draw() {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     var clearedLines = 0;
     if (selectedShape == null) // If there is no new shape, create one
@@ -850,6 +851,9 @@ function draw() {
         dropSpeed = selectedShape.perTurnMove(dropSpeed); // Drop by a preset amount
         oneTurn = 0;
     }
+
+    zPressed = false;
+    xPressed = false;
 }
 
-setInterval(draw, 200); // chunky movement
+setInterval(draw, 125); // chunky movement
