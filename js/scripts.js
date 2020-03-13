@@ -780,6 +780,7 @@ function rainDown(tetrisBlocks) {
 // Differentiate the Blocks colors
 // Make the cleared blocks blink!
 // Make the square spin?
+// Make it efficient
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
 var tetrisBlocks = {};
@@ -851,4 +852,4 @@ function draw() {
     }
 }
 
-setInterval(draw, 50); // chunky movement
+setInterval(draw, 200); // chunky movement
