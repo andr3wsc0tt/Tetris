@@ -628,7 +628,6 @@ function rainDown(tetrisBlocks) {
     for (let i = 0; i < 4; i++) {
         for (let height = canvas.height - 20; height > 0; height -= 10) {
             if (tetrisBlocks[height] != undefined && tetrisBlocks[height + 10] == undefined) {
-                console.log(tetrisBlocks[height], tetrisBlocks[height + 10], height);
                 tetrisBlocks[height + 10] = tetrisBlocks[height];
                 for (var xs in tetrisBlocks[height + 10]) {
                     tetrisBlocks[height + 10][xs].y += 10;
@@ -637,7 +636,7 @@ function rainDown(tetrisBlocks) {
             }
         }
     }
-    return tetrisBlocks;
+    return tetrisBlocks
 }
 
 // Create a random shape - DONE
@@ -657,16 +656,17 @@ function rainDown(tetrisBlocks) {
 // MUSIC!!! - DONE
 // More Shapes - 4 shapes only 3x3. - DONE
 // Don't let shapes spin through other shapes - DONE
-// Spins from the center of a 3x3 piece - Done
+// Spins from the center of a 3x3 piece - DONE
+// Add the long piece - DONE
+// The long shape needs to get made and considered in all logic :) - DONE
 
-// Add the long piece
-// The long shape needs to get made and considered in all logic :)
 // Score
 // Make the spin central to the specific shape
 
 /* User Interface */
 // Make the keys adequately responsive!!!
 // Differentiate the Blocks colors
+// Make the cleared blocks blink!
 
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
