@@ -776,7 +776,7 @@ function rainDown(tetrisBlocks) {
 // Score
 
 /* User Interface */
-// Make the keys adequately responsive!!!
+// Make the keys adequately responsive!!!!
 // Differentiate the Blocks colors
 // Make the cleared blocks blink!
 // Make the square spin?
