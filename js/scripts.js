@@ -436,7 +436,12 @@ class Shape {
     }
     perTurnMove = function (dropSpeed) {
         dropSpeed++;
-        if (dropSpeed == 1)
+        //score == 1000, level = 10 - score == 2000, level = 9 - score == 3000, level = 8
+        console.log(score);
+        var level = 10 - Math.floor(score/100);
+        console.log(level);
+        console.log(dropSpeed);
+        if (dropSpeed == level) // 10 == slow, 1 == super fast
         {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
@@ -772,6 +777,26 @@ function rainDown(tetrisBlocks) {
     }
     return tetrisBlocks
 }
+function scoreClear(clearedLines)
+{
+    switch(clearedLines)
+    {
+        case 1:
+            score += 100;
+            break;
+        case 2:
+            score += 200;
+            break;
+        case 3:
+            score += 300;
+            break;
+        case 4:
+            score += 500;
+            break;
+    }
+    clearedLines = 0;
+    return clearedLines;
+}
 
 // Create a random shape - DONE
 // Choose a random x value thats JUST below y=0 - DONE
@@ -836,6 +861,7 @@ var MyMusic = new sound("./resources/Tetris.mp3")
 
 
 var dropSpeed = 0;
+var score = 0;
 function drawGame() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -843,7 +869,7 @@ function drawGame() {
     if (selectedShape == null) // If there is no new shape, create one
     {
         var randShape = shapes[Math.floor(Math.random() * shapes.length)];
-        selectedShape = new Shape(randShape);
+        selectedShape = new Shape("I");
     }
 
     selectedShape.move(tetrisBlocks); // Let the player move
@@ -858,9 +884,8 @@ function drawGame() {
             clearedLines = checkLines(tetrisBlocks); // Clear the full rows
             tetrisBlocks = rainDown(tetrisBlocks);  // Count the rows cleared
 
-            if (clearedLines == 3)
-                alert("TETRIS");
-
+            clearedLines = scoreClear(clearedLines);
+        
             if (selectedShape.checkDead())
                 alert("GG");
 
@@ -877,6 +902,10 @@ function drawGame() {
 
     xPressed = false;
     cPressed = false;
+    window.requestAnimationFrame(drawGame);
+    //setTimeout(drawGame, 50);
 }
 
-setInterval(drawGame, 50); // chunky movement
+window.requestAnimationFrame(drawGame);
+//setTimeout(drawGame, 50);
+// setInterval(drawGame, 50); // chunky movement
