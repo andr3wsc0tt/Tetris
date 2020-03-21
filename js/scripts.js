@@ -436,12 +436,9 @@ class Shape {
     }
     perTurnMove = function (dropSpeed) {
         dropSpeed++;
-        //score == 1000, level = 10 - score == 2000, level = 9 - score == 3000, level = 8
-        console.log(score);
-        var level = 10 - Math.floor(score/100);
-        console.log(level);
-        console.log(dropSpeed);
-        if (dropSpeed == level) // 10 == slow, 1 == super fast
+        var level = Math.max(1, 10 - Math.floor(score/100));
+        console.log(`Level: ${level} - Dropspeed: ${dropSpeed} - Score: ${score}`);
+        if (dropSpeed > level) // 10 == slow, 1 == super fast
         {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
@@ -862,7 +859,11 @@ var MyMusic = new sound("./resources/Tetris.mp3")
 
 var dropSpeed = 0;
 var score = 0;
-function drawGame() {
+var start = null;
+function drawGame(timestamp) {
+
+    // if (!start) start = timestamp;
+    // var progress = timestamp - start;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     var clearedLines = 0;
@@ -902,7 +903,9 @@ function drawGame() {
 
     xPressed = false;
     cPressed = false;
-    window.requestAnimationFrame(drawGame);
+    
+    setTimeout(function(){window.requestAnimationFrame(drawGame)}, 50);
+
     //setTimeout(drawGame, 50);
 }
 
