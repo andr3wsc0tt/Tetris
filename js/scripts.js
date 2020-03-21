@@ -71,20 +71,60 @@ function keyUpHandler(e) {
     }
 }
 class brick {
-    constructor(x_, y_, w_, h_, shape_, dim_) {
+    constructor(x_, y_, w_, h_, shape_) {
         this.x = x_;
         this.y = y_;
         this.w = w_;
         this.h = h_;
+        this.shape = shape_;
     }
     drawBrick = function () {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.w, this.h);
 
         var gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.w, this.y + this.h);
-        gradient.addColorStop("0", "magenta");
-        gradient.addColorStop("0.5", "blue");
-        gradient.addColorStop("1.0", "red");
+
+        ["t", "s", "z", "L", "reverse-L", "block", "I"];
+        switch(this.shape)
+        {
+            case "I": 
+                gradient.addColorStop("0", "#0AC6FC");
+                gradient.addColorStop("0.5", "#02E6E0");
+                gradient.addColorStop("1.0", "#0582F5"); 
+                break;
+            case "block": // no pop
+                gradient.addColorStop("0", "#E8E40E");
+                gradient.addColorStop("0.5", "#FFEB1B");
+                gradient.addColorStop("1.0", "#FCFF1C");
+                break;
+            case "t":
+                gradient.addColorStop("0", "#E00CF7"); 
+                gradient.addColorStop("0.5", "#B000F1");
+                gradient.addColorStop("1.0", "#F000E8");
+                break;
+            case "L": 
+                gradient.addColorStop("0", "#FF9B00");
+                gradient.addColorStop("0.5", "#FF8C00");
+                gradient.addColorStop("1.0", "#E8660C");
+                break;
+            case "reverse-L":
+                gradient.addColorStop("0", "#0FFFCE");
+                gradient.addColorStop("0.5", "#0137FF");
+                gradient.addColorStop("1.0", "#CA0DFF");
+                break;
+            case "s":
+                gradient.addColorStop("0", "#FFED14");
+                gradient.addColorStop("0.5", "#00D10F");
+                gradient.addColorStop("1.0", "#08F5FF");
+                break;
+            case "z":
+                gradient.addColorStop("0", "magenta");
+                gradient.addColorStop("0.5", "red");
+                gradient.addColorStop("1.0", "red");
+                break;
+        }
+
+        
         ctx.fillStyle = gradient;
         ctx.strokeStyle = "black";
         ctx.fill();
@@ -161,7 +201,7 @@ class Shape {
             this.row[i] = [];
             for (let j = 0; j < this.dim; j++) {
                 if (this.shapeTest(i, j))
-                    col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight);
+                    col[j] = new brick(x + (j * brickHeight), y + (i * brickWidth), brickWidth, brickHeight, this.shape_name);
             }
             this.row[i] = col;
         }
@@ -723,7 +763,6 @@ class Shape {
 
         return tetrisBlocks;
     }
-
     checkDead = function () {
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
@@ -816,15 +855,16 @@ function scoreClear(clearedLines)
 // Add the long piece - DONE
 // The long shape needs to get made and considered in all logic :) - DONE
 // Make the spin central to the specific shape - DONE
+// Score - DONE
 
-// Score
+// Make the keys adequately responsive!!!!
+// Wall kicks
+// Fix weird spins
 
 /* User Interface */
-// Make the keys adequately responsive!!!!
+
 // Differentiate the Blocks colors
 // Make the cleared blocks blink!
-// Make the square spin?
-// Make the I spin better
 // Make it efficient
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
@@ -870,7 +910,7 @@ function drawGame(timestamp) {
     if (selectedShape == null) // If there is no new shape, create one
     {
         var randShape = shapes[Math.floor(Math.random() * shapes.length)];
-        selectedShape = new Shape("I");
+        selectedShape = new Shape(randShape);
     }
 
     selectedShape.move(tetrisBlocks); // Let the player move
