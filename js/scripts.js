@@ -6,11 +6,11 @@ var ctx = canvas.getContext('2d');
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-canvas.width = 160;
-canvas.height = 300;
+canvas.width = 500;
+canvas.height = 1100;
 
 var x = canvas.width / 2;
-var y = -10;
+var y = 0;
 
 var rightPressed = false;
 var leftPressed = false;
@@ -19,10 +19,10 @@ var downPressed = false;
 var xPressed = false;
 var cPressed = false;
 var pPressed = false;
-var brickWidth = 10;
-var brickHeight = 10;
+var brickWidth = canvas.width / 10;
+var brickHeight = brickWidth;
 var tetrisLength = canvas.width / brickWidth; // canvas.width / brickWidth
-var dy = 10; // falling
+var dy = brickWidth; // falling
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -801,10 +801,12 @@ function checkLines(tetrisBlocks) {
 }
 function rainDown(tetrisBlocks) {
     for (let i = 0; i < 4; i++) {
-        for (let height = canvas.height - 20; height > 0; height -= brickHeight) {
+        for (let height = canvas.height - 2*brickWidth; height > 0; height -= brickHeight) {
+
             if (tetrisBlocks[height] != undefined && tetrisBlocks[height + brickHeight] == undefined) {
                 tetrisBlocks[height + brickHeight] = tetrisBlocks[height];
                 for (var xs in tetrisBlocks[height + brickHeight]) {
+                    
                     tetrisBlocks[height + brickHeight][xs].y += brickHeight;
                 }
                 delete tetrisBlocks[height];
@@ -901,10 +903,6 @@ var dropSpeed = 0;
 var score = 0;
 var level;
 function drawGame(timestamp) {
-
-    // if (!start) start = timestamp;
-    // var progress = timestamp - start;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     var clearedLines = 0;
     if (selectedShape == null) // If there is no new shape, create one
