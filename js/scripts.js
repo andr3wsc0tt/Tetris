@@ -6,7 +6,7 @@ var ctx = canvas.getContext('2d');
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-canvas.width = 200;
+canvas.width = 160;
 canvas.height = 300;
 
 var x = canvas.width / 2;
@@ -21,7 +21,7 @@ var cPressed = false;
 var pPressed = false;
 var brickWidth = 10;
 var brickHeight = 10;
-var tetrisLength = 20; // canvas.width / brickWidth
+var tetrisLength = canvas.width / brickWidth; // canvas.width / brickWidth
 var dy = 10; // falling
 
 function keyDownHandler(e) {
@@ -214,7 +214,7 @@ class Shape {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
-                        this.row[i][j].x += 10;
+                        this.row[i][j].x += brickWidth;
                 }
             }
 
@@ -228,7 +228,7 @@ class Shape {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
-                        this.row[i][j].x -= 10;
+                        this.row[i][j].x -= brickWidth;
                 }
             }
         }
@@ -236,7 +236,7 @@ class Shape {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
-                        this.row[i][j].y -= 10;
+                        this.row[i][j].y -= brickHeight;
                 }
             }
             
@@ -245,7 +245,7 @@ class Shape {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
-                        this.row[i][j].y += 10;
+                        this.row[i][j].y += brickHeight;
                 }
             }
         }
@@ -258,7 +258,7 @@ class Shape {
             this.rotateShape_CW();
         }
         if (pPressed) {
-            dy = Math.abs(dy - 10);
+            dy = Math.abs(dy - brickHeight);
         }
         
     }
@@ -267,7 +267,7 @@ class Shape {
             for (let j = 0; j < this.dim; j++)
                 if (this.row[j][i] != undefined) {
                     // console.log((this.row[2][i].y)+this.row[2][i].h/2);
-                    if ((this.row[j][i].y) + (this.row[j][i].h / 2) >= canvas.height - 10) // Not sure why it's 80?
+                    if ((this.row[j][i].y) + (this.row[j][i].h / 2) >= canvas.height - brickHeight) // Not sure why it's 80?
                     {
                         return true;
                     }
@@ -280,7 +280,7 @@ class Shape {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
                     // console.log((this.row[i][2].x)+(this.row[i][2].w/2));
-                    if (this.row[i][j].x + (this.row[i][j].w / 2) > canvas.width - 10) // Not sure why it's 80?
+                    if (this.row[i][j].x + (this.row[i][j].w / 2) > canvas.width - brickWidth) // Not sure why it's 80?
                     {
                         return true;
                     }
@@ -436,7 +436,7 @@ class Shape {
     }
     perTurnMove = function (dropSpeed) {
         dropSpeed++;
-        if (dropSpeed == 10)
+        if (dropSpeed == 1)
         {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
@@ -551,10 +551,10 @@ class Shape {
                     var x0 = pX;
                     var y0 = pY;
 
-                    if (-y + x0 < 0 || -y + x0 > canvas.width - 10) {
+                    if (-y + x0 < 0 || -y + x0 > canvas.width - brickHeight) {
                         return true;
                     }
-                    if (x + y0 >= canvas.height - 10) {
+                    if (x + y0 >= canvas.height - brickHeight) {
                         return true;
                     }
                     
@@ -623,10 +623,10 @@ class Shape {
                     var x0 = pX;
                     var y0 = pY;
 
-                    if (y + x0 < 0 || y + x0 > canvas.width - 10) {
+                    if (y + x0 < 0 || y + x0 > canvas.width - brickWidth) {
                         return true;
                     }
-                    if (-x + y0 >= canvas.height - 10) {
+                    if (-x + y0 >= canvas.height - brickHeight) {
                         return true;
                     }
 
@@ -760,11 +760,11 @@ function checkLines(tetrisBlocks) {
 }
 function rainDown(tetrisBlocks) {
     for (let i = 0; i < 4; i++) {
-        for (let height = canvas.height - 20; height > 0; height -= 10) {
-            if (tetrisBlocks[height] != undefined && tetrisBlocks[height + 10] == undefined) {
-                tetrisBlocks[height + 10] = tetrisBlocks[height];
-                for (var xs in tetrisBlocks[height + 10]) {
-                    tetrisBlocks[height + 10][xs].y += 10;
+        for (let height = canvas.height - 20; height > 0; height -= brickHeight) {
+            if (tetrisBlocks[height] != undefined && tetrisBlocks[height + brickHeight] == undefined) {
+                tetrisBlocks[height + brickHeight] = tetrisBlocks[height];
+                for (var xs in tetrisBlocks[height + brickHeight]) {
+                    tetrisBlocks[height + brickHeight][xs].y += brickHeight;
                 }
                 delete tetrisBlocks[height];
             }
@@ -802,6 +802,7 @@ function rainDown(tetrisBlocks) {
 // Differentiate the Blocks colors
 // Make the cleared blocks blink!
 // Make the square spin?
+// Make the I spin better
 // Make it efficient
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
@@ -878,4 +879,4 @@ function drawGame() {
     cPressed = false;
 }
 
-setInterval(drawGame, 125); // chunky movement
+setInterval(drawGame, 50); // chunky movement
