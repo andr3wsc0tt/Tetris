@@ -995,13 +995,15 @@ function scoreClear(clearedLines)
 // Score - DONE
 // Differentiate the Blocks colors - DONE
 
-// Make the keys adequately responsive!!!!
-// Wall kicks - t spin
-// Fix weird spins
+// Make the keys adequately responsive!!!! - DOING
+// Wall kicks - DOING
+// Fix weird spins - DOING
 
+// t spin
 /* User Interface */
 
 // Show Score
+// Make score natural
 // Make the cleared blocks blink!
 // Make it efficient
 
