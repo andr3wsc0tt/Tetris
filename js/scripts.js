@@ -7,9 +7,6 @@ document.addEventListener("keyup", keyUpHandler, false);
 canvas.width = 250;
 canvas.height = 550;
 
-var x = canvas.width / 2;
-var y = 0;
-
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
@@ -21,6 +18,9 @@ var brickWidth = canvas.width / 10;
 var brickHeight = brickWidth;
 var tetrisLength = canvas.width / brickWidth; // canvas.width / brickWidth
 var dy = brickWidth; // falling
+
+var x = canvas.width / 2;
+var y = -brickWidth;
 
 function keyDownHandler(e) {
     if (e.key == "Right" || e.key == "ArrowRight") {
@@ -999,13 +999,17 @@ function scoreClear(clearedLines)
 // Wall kicks - DOING
 // Fix weird spins - DOING
 
+/* Logic */
 // t spin
-/* User Interface */
-
-// Show Score
-// Make score natural
-// Make the cleared blocks blink!
 // Make it efficient
+// Make score progression natural
+// Shape randomizer should be distributed probability
+// blocks are overlapping on spawn..?
+
+/* User Interface */
+// Show Score
+// Make the cleared blocks blink!
+
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
 var tetrisBlocks = {};
