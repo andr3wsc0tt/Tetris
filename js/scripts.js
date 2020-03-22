@@ -1,13 +1,11 @@
 var canvas = document.getElementById('Tetris-Canvas');
 var ctx = canvas.getContext('2d');
 
-
-
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-canvas.width = 500;
-canvas.height = 1100;
+canvas.width = 250;
+canvas.height = 550;
 
 var x = canvas.width / 2;
 var y = 0;
@@ -145,6 +143,27 @@ class Shape {
             this.dim = 3;
 
         this.row = [];
+        switch(this.shape_name)
+        {
+            case "L":
+                this.spawn = 1;
+                break;
+            case "reverse-L":
+                this.spawn = 3;
+                break;
+            case "z":
+                this.spawn = 2;
+                break;
+            case "s":
+                this.spawn = 2;
+                break;
+            case "t":
+                this.spawn = 0;
+                break;
+            case "I":
+                this.spawn = 0;
+                break;
+        }
 
         this.createShape();
     }
@@ -186,7 +205,7 @@ class Shape {
                 return (i == 1 && j > 0 || i == 2 && j < 2);
                 break;
             case "t":
-                return (i == 1 && j == 1 || i == 2);
+                return (i == 1 || j == 1 && i == 0);
                 break;
             case "I":
                 return (i == 1);
@@ -289,13 +308,35 @@ class Shape {
                 }
             }
         }
-        
+
         if (xPressed && !this.checkRotateShape_CCW(tetrisBlocks)) {
             this.rotateShape_CCW();
+        }
+        else if (xPressed && this.checkRotateShape_CCW(tetrisBlocks))
+        {
+            var x_tran = null, y_tran = null;
+            [x_tran, y_tran] = this.checkWallKicks_CCW();
+
+            if (x_tran != null && y_tran != null)
+            {
+                console.log(x_tran, y_tran);
+                this.rotateShape_CCW(x_tran,y_tran);
+            }
         }
     
         if (cPressed && !this.checkRotateShape_CW(tetrisBlocks)) {
             this.rotateShape_CW();
+        }
+        else if (cPressed && this.checkRotateShape_CW(tetrisBlocks))
+        {
+            var x_tran = null, y_tran = null;
+            [x_tran, y_tran] = this.checkWallKicks_CW();
+
+            if (x_tran != null && y_tran != null)
+            {
+                console.log(x_tran, y_tran);
+                this.rotateShape_CW(x_tran,y_tran);
+            }
         }
         if (pPressed) {
             dy = Math.abs(dy - brickHeight);
@@ -492,66 +533,12 @@ class Shape {
         }
         return dropSpeed;
     }
-    rotateShape_CCW = function () {
-        var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
-        var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
-
-        if (this.shape_name == "I")
-        {
-            if (this.row[1][0] != undefined)
-            {
-                pX = this.row[1][2].x;
-                pY = this.row[1][2].y + this.row[1][2].h;
-            }
-            else if (this.row[0][2] != undefined)
-            {
-                pX = this.row[2][2].x;
-                pY = this.row[2][2].y;
-            }
-            else if (this.row[2][0] != undefined)
-            {
-                pX = this.row[2][2].x;
-                pY = this.row[2][2].y;
-            }
-            else if (this.row[0][1] != undefined)
-            {
-                pX = this.row[2][1].x + this.row[2][1].w;
-                pY = this.row[2][1].y;
-            }
-
-        }
-
-        for (let i = 0; i < this.dim; i++) {
-            for (let j = 0; j < this.dim; j++) {
-                if (this.row[i][j] != undefined) {
-                    var psW = this.row[i][j].w / 2;
-                    var psH = this.row[i][j].h / 2;
-
-                    var SSx = this.row[i][j].x + psW;
-                    var SSy = this.row[i][j].y + psH;
-
-                    var x = SSx - pX;
-                    var y = SSy - pY;
-
-                    var x0 = pX;
-                    var y0 = pY;
-
-                    this.row[i][j].x = -y - psW;
-                    this.row[i][j].y = x - psH;
-
-                    this.row[i][j].x += x0;
-                    this.row[i][j].y += y0;
-
-                }
-            }
-        }
-    }
-    checkRotateShape_CCW = function (tetrisBlocks) {
+    checkRotateShape_CCW = function (tetrisBlocks, x_tran=0, y_tran=0) {
         if(this.shape_name == "block")
             return true;
 
-        var pX = this.row[1][1].x + this.row[1][1].w / 2; // middle point x
-        var pY = this.row[1][1].y + this.row[1][1].h / 2; // middle point y
+        var pX = this.row[1][1].x + this.row[1][1].w / 2 + (x_tran*brickWidth); // middle point x
+        var pY = this.row[1][1].y + this.row[1][1].h / 2 + (y_tran*brickWidth); // middle point y
 
         if (this.shape_name == "I")
         {
@@ -596,7 +583,7 @@ class Shape {
                     if (-y + x0 < 0 || -y + x0 > canvas.width - brickHeight) {
                         return true;
                     }
-                    if (x + y0 >= canvas.height - brickHeight) {
+                    if (x + y0 > canvas.height - brickHeight) {
                         return true;
                     }
                     
@@ -615,13 +602,70 @@ class Shape {
         }
         return false;
     }
-    checkRotateShape_CW = function (tetrisBlocks) {
+    rotateShape_CCW = function (x_tran=0, y_tran=0) {
+        var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran*brickWidth); // middle point x
+        var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran*brickWidth); // middle point y
+
+        if (--this.spawn == -1)
+            this.spawn = 3;
+
+        if (this.shape_name == "I")
+        {
+            if (this.row[1][0] != undefined)
+            {
+                pX = this.row[1][2].x + (x_tran*brickWidth);
+                pY = this.row[1][2].y + this.row[1][2].h + (y_tran*brickWidth);
+            }
+            else if (this.row[0][2] != undefined)
+            {
+                pX = this.row[2][2].x + (x_tran*brickWidth);
+                pY = this.row[2][2].y + (y_tran*brickWidth);
+            }
+            else if (this.row[2][0] != undefined)
+            {
+                pX = this.row[2][2].x + (x_tran*brickWidth);
+                pY = this.row[2][2].y + (y_tran*brickWidth);
+            }
+            else if (this.row[0][1] != undefined)
+            {
+                pX = this.row[2][1].x + this.row[2][1].w + (x_tran*brickWidth);
+                pY = this.row[2][1].y + (y_tran*brickWidth);
+            }
+
+        }
+
+        for (let i = 0; i < this.dim; i++) {
+            for (let j = 0; j < this.dim; j++) {
+                if (this.row[i][j] != undefined) {
+                    var psW = this.row[i][j].w / 2;
+                    var psH = this.row[i][j].h / 2;
+
+                    var SSx = this.row[i][j].x + psW;
+                    var SSy = this.row[i][j].y + psH;
+
+                    var x = SSx - pX;
+                    var y = SSy - pY;
+
+                    var x0 = pX;
+                    var y0 = pY;
+
+                    this.row[i][j].x = -y - psW;
+                    this.row[i][j].y = x - psH;
+
+                    this.row[i][j].x += x0;
+                    this.row[i][j].y += y0;
+
+                }
+            }
+        }
+    }
+    checkRotateShape_CW = function (tetrisBlocks, x_tran=0, y_tran=0) {
 
         if(this.shape_name == "block")
             return true;
 
-        var pX = this.row[1][1].x + (this.row[1][1].w / 2);
-        var pY = this.row[1][1].y + (this.row[1][1].h / 2);
+        var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran * brickWidth);
+        var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran * brickWidth);
 
         if (this.shape_name == "I")
         {
@@ -688,32 +732,34 @@ class Shape {
         }
         return false;
     }
-    rotateShape_CW = function () {
+    rotateShape_CW = function (x_tran=0, y_tran=0) {
 
-        var pX = this.row[1][1].x + (this.row[1][1].w / 2);
-        var pY = this.row[1][1].y + (this.row[1][1].h / 2);
+        var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran * brickWidth);
+        var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran * brickWidth);
+
+        this.spawn = ++this.spawn % 4;
 
         if (this.shape_name == "I")
         {
             if (this.row[1][0] != undefined)
             {
-                pX = this.row[1][2].x;
-                pY = this.row[1][2].y + this.row[1][2].h;
+                pX = this.row[1][2].x + (x_tran*brickWidth);
+                pY = this.row[1][2].y + this.row[1][2].h + (y_tran*brickWidth);
             }
             else if (this.row[0][2] != undefined)
             {
-                pX = this.row[2][2].x;
-                pY = this.row[2][2].y;
+                pX = this.row[2][2].x + (x_tran*brickWidth);
+                pY = this.row[2][2].y + (y_tran*brickWidth);
             }
             else if (this.row[2][0] != undefined)
             {
-                pX = this.row[2][2].x;
-                pY = this.row[2][2].y;
+                pX = this.row[2][2].x + (x_tran*brickWidth);
+                pY = this.row[2][2].y + (y_tran*brickWidth);
             }
             else if (this.row[0][1] != undefined)
             {
-                pX = this.row[2][1].x + this.row[2][1].w;
-                pY = this.row[2][1].y;
+                pX = this.row[2][1].x + this.row[2][1].w + (x_tran*brickWidth);
+                pY = this.row[2][1].y + (y_tran*brickWidth);
             }
 
         }
@@ -744,6 +790,95 @@ class Shape {
                 }
             }
         }
+    }
+    checkWallKicks_CCW = function()
+    {
+        var x_tran, y_tran;
+        var tests = [];
+        if (this.shape_name != "I")
+            switch(this.spawn)
+            {
+                case 0: // 0 -> L
+                    tests = [[0,0],[1,0],[1,-1],[0,2],[1,2]];
+                    break;
+                case 2: // 2 -> R
+                    tests = [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]];
+                    break;
+                case 1: // R -> 0
+                    tests = [[0,0],[1,0],[1,1],[0,-2],[1,-2]];
+                    break;
+                case 3: // L -> 2
+                    tests = [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]];
+                    break;
+            }
+        else
+            switch(this.spawn)
+            {
+                case 0: // 0 -> L
+                    tests = [[0,0],[-1,0],[2,0],[-1,-2],[2,1]];
+                    break;
+                case 2: // 2 -> R
+                    tests = [[0,0],[1,0],[2,0],[1,2],[-2,-1]];
+                    break;
+                case 1: // R -> 0
+                    tests = [[0,0],[2,0],[-1,0],[2,-1],[-1,2]];
+                    break;
+                case 3: // L -> 2
+                    tests = [[0,0],[-2,0],[1,0],[-2,1],[1,-2]];
+                    break;
+            }
+
+        for (let i = 0; i < tests.length; i++)
+        {
+            [x_tran, y_tran] = tests[i];
+            if (!this.checkRotateShape_CCW(tetrisBlocks, x_tran, y_tran))
+                return [x_tran, y_tran];
+        }
+        return [null, null];
+    }
+    checkWallKicks_CW = function()
+    {
+        var x_tran, y_tran;
+        var tests = [];
+        if (this.shape_name != "I")
+            switch(this.spawn)
+            {
+                case 0: // 0 -> R
+                    tests = [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]];
+                    break;
+                case 2: // 2 -> L
+                    tests = [[0,0],[1,0],[1,-1],[0,2],[1,2]];
+                    break;
+                case 1: // R -> 2
+                    tests = [[0,0],[1,0],[-1, 1],[0,-2],[1,-2]];
+                    break;
+                case 3: // L -> 0
+                    tests = [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]];
+                    break;
+            }
+        else
+            switch(this.spawn)
+            {
+                case 0: // 0 -> R
+                    tests = [[0,0],[-2,0],[1,0],[-2,1],[1,-2]];
+                    break;
+                case 2: // 2 -> L
+                    tests = [[0,0],[2,0],[-1,0],[2,-1],[-1,2]];
+                    break;
+                case 1: // R -> 2
+                    tests = [[0,0],[-1,0],[2, 0],[-1,-2],[2,1]];
+                    break;
+                case 3: // L -> 0
+                    tests = [[0,0],[1,0],[-2,0],[1,2],[-2,-1]];
+                    break;
+            }
+        for (let i = 0; i < tests.length; i++)
+        {
+            [x_tran, y_tran] = tests[i];
+            if (!this.checkRotateShape_CW(tetrisBlocks, x_tran, y_tran))
+                return [x_tran, y_tran];
+        }
+        return [null, null];
     }
     addToTetrisBlocks = function (tetrisBlocks) {
         for (let i = 0; i < this.dim; i++) {
@@ -858,14 +993,15 @@ function scoreClear(clearedLines)
 // The long shape needs to get made and considered in all logic :) - DONE
 // Make the spin central to the specific shape - DONE
 // Score - DONE
+// Differentiate the Blocks colors - DONE
 
 // Make the keys adequately responsive!!!!
-// Wall kicks
+// Wall kicks - t spin
 // Fix weird spins
 
 /* User Interface */
 
-// Differentiate the Blocks colors
+// Show Score
 // Make the cleared blocks blink!
 // Make it efficient
 
