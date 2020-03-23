@@ -1005,6 +1005,7 @@ function scoreClear(clearedLines)
 // Make score progression natural
 // Shape randomizer should be distributed probability
 // blocks are overlapping on spawn..?
+// t block in spawn = 0 doesn't wall kick
 
 /* User Interface */
 // Show Score
