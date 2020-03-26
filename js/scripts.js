@@ -68,6 +68,27 @@ function keyUpHandler(e) {
         pPressed = false;
     }
 }
+
+function drawGrid()
+{
+    for (let i = brickWidth; i < canvas.width; i+=brickWidth)
+    {
+        ctx.beginPath();
+        ctx.moveTo(i,0);
+        ctx.lineTo(i, canvas.height);
+        ctx.strokeStyle = "white";
+        ctx.stroke();
+    }
+
+    for (let i = brickWidth; i < canvas.height; i+=brickWidth)
+    {
+        ctx.beginPath();
+        ctx.moveTo(0,i);
+        ctx.lineTo(canvas.width, i);
+        ctx.strokeStyle = "white";
+        ctx.stroke();
+    }
+}
 class brick {
     constructor(x_, y_, w_, h_, shape_) {
         this.x = x_;
@@ -517,7 +538,7 @@ class Shape {
     }
     perTurnMove = function (dropSpeed) {
         dropSpeed++;
-        level = 10 - Math.floor(score/100);
+        level = 10 - Math.floor(score/1000);
 
         if (dropSpeed > level) // 10 == slow, 1 == super fast
         {
@@ -995,6 +1016,7 @@ function scoreClear(clearedLines)
 // Score - DONE
 // Differentiate the Blocks colors - DONE
 
+/* Ongoing / Neverending Improvements */
 // Make the keys adequately responsive!!!! - DOING
 // Wall kicks - DOING
 // Fix weird spins - DOING
@@ -1005,7 +1027,7 @@ function scoreClear(clearedLines)
 // Make score progression natural
 // Shape randomizer should be distributed probability
 // blocks are overlapping on spawn..?
-// t block in spawn = 0 doesn't wall kick
+// t block in spawn = 0 doesn't wall kick & s block in spawn = 0 or 2 & zin 
 
 /* User Interface */
 // Show Score
@@ -1047,6 +1069,7 @@ var score = 0;
 var level;
 function drawGame(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawGrid();
     var clearedLines = 0;
     if (selectedShape == null) // If there is no new shape, create one
     {
@@ -1085,6 +1108,9 @@ function drawGame(timestamp) {
     xPressed = false;
     cPressed = false;
     
+    var displayScore = document.getElementById("score");
+    displayScore.textContent = score;
+
     setTimeout(function(){window.requestAnimationFrame(drawGame)}, Math.max(0, Math.min(50, 50+level)));
 }
 

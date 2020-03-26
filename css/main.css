@@ -1,4 +1,40 @@
+body
+{
+    background-image: url("../resources/background.jpg");
+    background-size: cover;
+}
+
 canvas 
 {
-    background: #eee;
+    background: black;
+    border: solid grey 2px;
+    margin-left:5vw; 
+    width: 17vw;
+}
+
+.container
+{
+    margin-top: 10vh;
+    display:flex;
+    justify-content: center;
+}
+
+
+
+.score
+{
+    margin-left: 5vw;
+}
+
+.score h2
+{
+    font-size: 5vh;
+    text-decoration: underline;
+    color:white;
+}
+
+#score
+{
+    font-size:4vh;
+    color:white;
 }
