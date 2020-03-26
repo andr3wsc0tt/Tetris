@@ -1029,11 +1029,11 @@ function scoreClear(clearedLines)
 // Make it efficient
 
 // Shape randomizer should be distributed probability
-// blocks are overlapping on spawn..?
 // t block in spawn = 0 doesn't wall kick & s block in spawn = 0 or 2 & zin 
 
 /* User Interface */
 // Make the cleared blocks blink!
+// f5 breaks the music
 
 
 var shapes = ["t", "s", "z", "L", "reverse-L", "block", "I"];
@@ -1041,15 +1041,11 @@ var tetrisBlocks = {};
 var selectedShape = null;
 oneTurn = 0; // Timer for how long you can to stay on a block before you stick
 
-function sound(src) {
+function sound(src, loopMe) {
     this.sound = document.createElement("audio");
     this.sound.id = "TetrisAudio";
     this.sound.src = src;
-    this.sound.loop = true;
-    this.sound.addEventListener('ended', function () {
-        this.currentTime = 0;
-        this.play();
-    }, false);
+    this.sound.loop = loopMe;
     this.sound.setAttribute("preload", "auto");
     // this.sound.setAttribute("controls", "none");
     // this.sound.style.display = "none";
@@ -1062,8 +1058,11 @@ function sound(src) {
     }
 }
 
-var MyMusic = new sound("./resources/Tetris.mp3")
-//MyMusic.play();
+
+var MyMusic = new sound("./resources/Tetris.mp3", true);
+var lineClear = new sound("./resources/clear.mp3", false);
+var clearFour = new sound("./resources/clear4.mp3", false);
+// MyMusic.play();
 
 
 var dropSpeed = 0;
@@ -1091,8 +1090,17 @@ function drawGame(timestamp) {
             clearedLines = checkLines(tetrisBlocks); // Clear the full rows
             tetrisBlocks = rainDown(tetrisBlocks);  // Count the rows cleared
 
+            if (clearedLines > 0 && clearedLines < 4)
+            {
+                lineClear.play();
+            }
+            else if (clearedLines == 4)
+            {
+                clearFour.play();
+            }
+
+
             clearedLines = scoreClear(clearedLines);
-        
             if (selectedShape.checkDead())
                 alert("GG");
 
