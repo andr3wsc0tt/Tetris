@@ -76,7 +76,7 @@ function drawGrid()
         ctx.beginPath();
         ctx.moveTo(i,0);
         ctx.lineTo(i, canvas.height);
-        ctx.strokeStyle = "white";
+        ctx.strokeStyle = "black";
         ctx.stroke();
     }
 
@@ -85,7 +85,7 @@ function drawGrid()
         ctx.beginPath();
         ctx.moveTo(0,i);
         ctx.lineTo(canvas.width, i);
-        ctx.strokeStyle = "white";
+        ctx.strokeStyle = "black";
         ctx.stroke();
     }
 }
@@ -1015,22 +1015,24 @@ function scoreClear(clearedLines)
 // Make the spin central to the specific shape - DONE
 // Score - DONE
 // Differentiate the Blocks colors - DONE
+// Show Score - DONE
 
 /* Ongoing / Neverending Improvements */
 // Make the keys adequately responsive!!!! - DOING
 // Wall kicks - DOING
 // Fix weird spins - DOING
 
+// Make score progression natural - From 0-60 once you hit level 1.
+
 /* Logic */
 // t spin
 // Make it efficient
-// Make score progression natural
+
 // Shape randomizer should be distributed probability
 // blocks are overlapping on spawn..?
 // t block in spawn = 0 doesn't wall kick & s block in spawn = 0 or 2 & zin 
 
 /* User Interface */
-// Show Score
 // Make the cleared blocks blink!
 
 

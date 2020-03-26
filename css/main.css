@@ -6,8 +6,8 @@ body
 
 canvas 
 {
-    background: black;
-    border: solid grey 2px;
+    background: #343538;
+    border: solid black 2px;
     margin-left:5vw; 
     width: 17vw;
 }
