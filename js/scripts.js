@@ -69,21 +69,18 @@ function keyUpHandler(e) {
     }
 }
 
-function drawGrid()
-{
-    for (let i = brickWidth; i < canvas.width; i+=brickWidth)
-    {
+function drawGrid() {
+    for (let i = brickWidth; i < canvas.width; i += brickWidth) {
         ctx.beginPath();
-        ctx.moveTo(i,0);
+        ctx.moveTo(i, 0);
         ctx.lineTo(i, canvas.height);
         ctx.strokeStyle = "black";
         ctx.stroke();
     }
 
-    for (let i = brickWidth; i < canvas.height; i+=brickWidth)
-    {
+    for (let i = brickWidth; i < canvas.height; i += brickWidth) {
         ctx.beginPath();
-        ctx.moveTo(0,i);
+        ctx.moveTo(0, i);
         ctx.lineTo(canvas.width, i);
         ctx.strokeStyle = "black";
         ctx.stroke();
@@ -104,12 +101,11 @@ class brick {
         var gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.w, this.y + this.h);
 
         ["t", "s", "z", "L", "reverse-L", "block", "I"];
-        switch(this.shape)
-        {
-            case "I": 
+        switch (this.shape) {
+            case "I":
                 gradient.addColorStop("0", "#0AC6FC");
                 gradient.addColorStop("0.5", "#02E6E0");
-                gradient.addColorStop("1.0", "#0582F5"); 
+                gradient.addColorStop("1.0", "#0582F5");
                 break;
             case "block": // no pop
                 gradient.addColorStop("0", "#E8E40E");
@@ -117,11 +113,11 @@ class brick {
                 gradient.addColorStop("1.0", "#FCFF1C");
                 break;
             case "t":
-                gradient.addColorStop("0", "#E00CF7"); 
+                gradient.addColorStop("0", "#E00CF7");
                 gradient.addColorStop("0.5", "#B000F1");
                 gradient.addColorStop("1.0", "#F000E8");
                 break;
-            case "L": 
+            case "L":
                 gradient.addColorStop("0", "#FF9B00");
                 gradient.addColorStop("0.5", "#FF8C00");
                 gradient.addColorStop("1.0", "#E8660C");
@@ -143,7 +139,7 @@ class brick {
                 break;
         }
 
-        
+
         ctx.fillStyle = gradient;
         ctx.strokeStyle = "black";
         ctx.fill();
@@ -164,8 +160,7 @@ class Shape {
             this.dim = 3;
 
         this.row = [];
-        switch(this.shape_name)
-        {
+        switch (this.shape_name) {
             case "L":
                 this.spawn = 1;
                 break;
@@ -189,17 +184,13 @@ class Shape {
         this.createShape();
     }
 
-    copyMe = function()
-    {
+    copyMe = function () {
         var retShape = [];
-        for (let i = 0; i < this.dim; i++)
-        {
+        for (let i = 0; i < this.dim; i++) {
             retShape[i] = [];
             var col = [];
-            for(let j = 0; j < this.dim; j++)
-            {
-                if (this.row[i][j] != undefined)
-                {
+            for (let j = 0; j < this.dim; j++) {
+                if (this.row[i][j] != undefined) {
                     col[i] = new brick(this.row[i][j].x, this.row[i][j].y, this.row[i][j].w, this.row[i][j].h);
                 }
             }
@@ -285,8 +276,7 @@ class Shape {
 
     move = function (tetrisBlocks) {
 
-        if (rightPressed && downPressed && this.blockDiagRight(tetrisBlocks))
-        {
+        if (rightPressed && downPressed && this.blockDiagRight(tetrisBlocks)) {
             return;
         }
 
@@ -298,13 +288,11 @@ class Shape {
                 }
             }
 
-        if (leftPressed && downPressed && this.blockDiagLeft(tetrisBlocks))
-        {
+        if (leftPressed && downPressed && this.blockDiagLeft(tetrisBlocks)) {
             return;
         }
-        
-        if (leftPressed && !this.leftCollision() && !rightPressed && !this.blockCollisionLeft(tetrisBlocks))
-        {
+
+        if (leftPressed && !this.leftCollision() && !rightPressed && !this.blockCollisionLeft(tetrisBlocks)) {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
@@ -319,9 +307,8 @@ class Shape {
                         this.row[i][j].y -= brickHeight;
                 }
             }
-            
-        if (downPressed && !this.groundCollision() && !this.blockCollisionTop(tetrisBlocks))
-        {
+
+        if (downPressed && !this.groundCollision() && !this.blockCollisionTop(tetrisBlocks)) {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
                     if (this.row[i][j] != undefined)
@@ -333,36 +320,32 @@ class Shape {
         if (xPressed && !this.checkRotateShape_CCW(tetrisBlocks)) {
             this.rotateShape_CCW();
         }
-        else if (xPressed && this.checkRotateShape_CCW(tetrisBlocks))
-        {
+        else if (xPressed && this.checkRotateShape_CCW(tetrisBlocks)) {
             var x_tran = null, y_tran = null;
             [x_tran, y_tran] = this.checkWallKicks_CCW();
 
-            if (x_tran != null && y_tran != null)
-            {
+            if (x_tran != null && y_tran != null) {
                 console.log(x_tran, y_tran);
-                this.rotateShape_CCW(x_tran,y_tran);
+                this.rotateShape_CCW(x_tran, y_tran);
             }
         }
-    
+
         if (cPressed && !this.checkRotateShape_CW(tetrisBlocks)) {
             this.rotateShape_CW();
         }
-        else if (cPressed && this.checkRotateShape_CW(tetrisBlocks))
-        {
+        else if (cPressed && this.checkRotateShape_CW(tetrisBlocks)) {
             var x_tran = null, y_tran = null;
             [x_tran, y_tran] = this.checkWallKicks_CW();
 
-            if (x_tran != null && y_tran != null)
-            {
+            if (x_tran != null && y_tran != null) {
                 console.log(x_tran, y_tran);
-                this.rotateShape_CW(x_tran,y_tran);
+                this.rotateShape_CW(x_tran, y_tran);
             }
         }
         if (pPressed) {
             dy = Math.abs(dy - brickHeight);
         }
-        
+
     }
     groundCollision = function () {
         for (let i = 0; i < this.dim; i++) {
@@ -538,14 +521,13 @@ class Shape {
     }
     perTurnMove = function (dropSpeed) {
         dropSpeed++;
-        level = 10 - Math.floor(score/1000);
+        level = 10 - Math.floor(score / 1000);
 
         if (dropSpeed > level) // 10 == slow, 1 == super fast
         {
             for (let i = 0; i < this.dim; i++) {
                 for (let j = 0; j < this.dim; j++) {
-                    if (this.row[i][j] != undefined)
-                    {
+                    if (this.row[i][j] != undefined) {
                         this.row[i][j].y += dy;
                     }
                 }
@@ -554,38 +536,33 @@ class Shape {
         }
         return dropSpeed;
     }
-    checkRotateShape_CCW = function (tetrisBlocks, x_tran=0, y_tran=0) {
-        if(this.shape_name == "block")
+    checkRotateShape_CCW = function (tetrisBlocks, x_tran = 0, y_tran = 0) {
+        if (this.shape_name == "block")
             return true;
 
-        var pX = this.row[1][1].x + this.row[1][1].w / 2 + (x_tran*brickWidth); // middle point x
-        var pY = this.row[1][1].y + this.row[1][1].h / 2 + (y_tran*brickWidth); // middle point y
+        var pX = this.row[1][1].x + this.row[1][1].w / 2 + (x_tran * brickWidth); // middle point x
+        var pY = this.row[1][1].y + this.row[1][1].h / 2 + (y_tran * brickWidth); // middle point y
 
-        if (this.shape_name == "I")
-        {
-            if (this.row[1][0] != undefined)
-            {
+        if (this.shape_name == "I") {
+            if (this.row[1][0] != undefined) {
                 pX = this.row[1][2].x;
                 pY = this.row[1][2].y + this.row[1][2].h;
             }
-            else if (this.row[0][2] != undefined)
-            {
+            else if (this.row[0][2] != undefined) {
                 pX = this.row[2][2].x;
                 pY = this.row[2][2].y;
             }
-            else if (this.row[2][0] != undefined)
-            {
+            else if (this.row[2][0] != undefined) {
                 pX = this.row[2][2].x;
                 pY = this.row[2][2].y;
             }
-            else if (this.row[0][1] != undefined)
-            {
+            else if (this.row[0][1] != undefined) {
                 pX = this.row[2][1].x + this.row[2][1].w;
                 pY = this.row[2][1].y;
             }
 
         }
-        
+
         for (let i = 0; i < this.dim; i++) {
             for (let j = 0; j < this.dim; j++) {
                 if (this.row[i][j] != undefined) {
@@ -607,12 +584,12 @@ class Shape {
                     if (x + y0 > canvas.height - brickHeight) {
                         return true;
                     }
-                    
+
                     for (var ys in tetrisBlocks) {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
-                            
-                            if (-y -psW + x0 == placedBlock.x && x - psH + y0 == placedBlock.y) {
+
+                            if (-y - psW + x0 == placedBlock.x && x - psH + y0 == placedBlock.y) {
                                 return true;
                             }
 
@@ -623,34 +600,29 @@ class Shape {
         }
         return false;
     }
-    rotateShape_CCW = function (x_tran=0, y_tran=0) {
-        var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran*brickWidth); // middle point x
-        var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran*brickWidth); // middle point y
+    rotateShape_CCW = function (x_tran = 0, y_tran = 0) {
+        var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran * brickWidth); // middle point x
+        var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran * brickWidth); // middle point y
 
         if (--this.spawn == -1)
             this.spawn = 3;
 
-        if (this.shape_name == "I")
-        {
-            if (this.row[1][0] != undefined)
-            {
-                pX = this.row[1][2].x + (x_tran*brickWidth);
-                pY = this.row[1][2].y + this.row[1][2].h + (y_tran*brickWidth);
+        if (this.shape_name == "I") {
+            if (this.row[1][0] != undefined) {
+                pX = this.row[1][2].x + (x_tran * brickWidth);
+                pY = this.row[1][2].y + this.row[1][2].h + (y_tran * brickWidth);
             }
-            else if (this.row[0][2] != undefined)
-            {
-                pX = this.row[2][2].x + (x_tran*brickWidth);
-                pY = this.row[2][2].y + (y_tran*brickWidth);
+            else if (this.row[0][2] != undefined) {
+                pX = this.row[2][2].x + (x_tran * brickWidth);
+                pY = this.row[2][2].y + (y_tran * brickWidth);
             }
-            else if (this.row[2][0] != undefined)
-            {
-                pX = this.row[2][2].x + (x_tran*brickWidth);
-                pY = this.row[2][2].y + (y_tran*brickWidth);
+            else if (this.row[2][0] != undefined) {
+                pX = this.row[2][2].x + (x_tran * brickWidth);
+                pY = this.row[2][2].y + (y_tran * brickWidth);
             }
-            else if (this.row[0][1] != undefined)
-            {
-                pX = this.row[2][1].x + this.row[2][1].w + (x_tran*brickWidth);
-                pY = this.row[2][1].y + (y_tran*brickWidth);
+            else if (this.row[0][1] != undefined) {
+                pX = this.row[2][1].x + this.row[2][1].w + (x_tran * brickWidth);
+                pY = this.row[2][1].y + (y_tran * brickWidth);
             }
 
         }
@@ -680,33 +652,28 @@ class Shape {
             }
         }
     }
-    checkRotateShape_CW = function (tetrisBlocks, x_tran=0, y_tran=0) {
+    checkRotateShape_CW = function (tetrisBlocks, x_tran = 0, y_tran = 0) {
 
-        if(this.shape_name == "block")
+        if (this.shape_name == "block")
             return true;
 
         var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran * brickWidth);
         var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran * brickWidth);
 
-        if (this.shape_name == "I")
-        {
-            if (this.row[1][0] != undefined)
-            {
+        if (this.shape_name == "I") {
+            if (this.row[1][0] != undefined) {
                 pX = this.row[1][2].x;
                 pY = this.row[1][2].y + this.row[1][2].h;
             }
-            else if (this.row[0][2] != undefined)
-            {
+            else if (this.row[0][2] != undefined) {
                 pX = this.row[2][2].x;
                 pY = this.row[2][2].y;
             }
-            else if (this.row[2][0] != undefined)
-            {
+            else if (this.row[2][0] != undefined) {
                 pX = this.row[2][2].x;
                 pY = this.row[2][2].y;
             }
-            else if (this.row[0][1] != undefined)
-            {
+            else if (this.row[0][1] != undefined) {
                 pX = this.row[2][1].x + this.row[2][1].w;
                 pY = this.row[2][1].y;
             }
@@ -741,7 +708,7 @@ class Shape {
                         for (var xs in tetrisBlocks[ys]) {
                             var placedBlock = tetrisBlocks[ys][xs];
 
-                            if (y -psW + x0 == placedBlock.x && -x -psH + y0 == placedBlock.y) {
+                            if (y - psW + x0 == placedBlock.x && -x - psH + y0 == placedBlock.y) {
                                 return true;
                             }
 
@@ -753,34 +720,29 @@ class Shape {
         }
         return false;
     }
-    rotateShape_CW = function (x_tran=0, y_tran=0) {
+    rotateShape_CW = function (x_tran = 0, y_tran = 0) {
 
         var pX = this.row[1][1].x + (this.row[1][1].w / 2) + (x_tran * brickWidth);
         var pY = this.row[1][1].y + (this.row[1][1].h / 2) + (y_tran * brickWidth);
 
         this.spawn = ++this.spawn % 4;
 
-        if (this.shape_name == "I")
-        {
-            if (this.row[1][0] != undefined)
-            {
-                pX = this.row[1][2].x + (x_tran*brickWidth);
-                pY = this.row[1][2].y + this.row[1][2].h + (y_tran*brickWidth);
+        if (this.shape_name == "I") {
+            if (this.row[1][0] != undefined) {
+                pX = this.row[1][2].x + (x_tran * brickWidth);
+                pY = this.row[1][2].y + this.row[1][2].h + (y_tran * brickWidth);
             }
-            else if (this.row[0][2] != undefined)
-            {
-                pX = this.row[2][2].x + (x_tran*brickWidth);
-                pY = this.row[2][2].y + (y_tran*brickWidth);
+            else if (this.row[0][2] != undefined) {
+                pX = this.row[2][2].x + (x_tran * brickWidth);
+                pY = this.row[2][2].y + (y_tran * brickWidth);
             }
-            else if (this.row[2][0] != undefined)
-            {
-                pX = this.row[2][2].x + (x_tran*brickWidth);
-                pY = this.row[2][2].y + (y_tran*brickWidth);
+            else if (this.row[2][0] != undefined) {
+                pX = this.row[2][2].x + (x_tran * brickWidth);
+                pY = this.row[2][2].y + (y_tran * brickWidth);
             }
-            else if (this.row[0][1] != undefined)
-            {
-                pX = this.row[2][1].x + this.row[2][1].w + (x_tran*brickWidth);
-                pY = this.row[2][1].y + (y_tran*brickWidth);
+            else if (this.row[0][1] != undefined) {
+                pX = this.row[2][1].x + this.row[2][1].w + (x_tran * brickWidth);
+                pY = this.row[2][1].y + (y_tran * brickWidth);
             }
 
         }
@@ -812,89 +774,81 @@ class Shape {
             }
         }
     }
-    checkWallKicks_CCW = function()
-    {
+    checkWallKicks_CCW = function () {
         var x_tran, y_tran;
         var tests = [];
         if (this.shape_name != "I")
-            switch(this.spawn)
-            {
+            switch (this.spawn) {
                 case 0: // 0 -> L
-                    tests = [[0,0],[1,0],[1,-1],[0,2],[1,2]];
+                    tests = [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]];
                     break;
                 case 2: // 2 -> R
-                    tests = [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]];
+                    tests = [[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]];
                     break;
                 case 1: // R -> 0
-                    tests = [[0,0],[1,0],[1,1],[0,-2],[1,-2]];
+                    tests = [[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]];
                     break;
                 case 3: // L -> 2
-                    tests = [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]];
+                    tests = [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]];
                     break;
             }
         else
-            switch(this.spawn)
-            {
+            switch (this.spawn) {
                 case 0: // 0 -> L
-                    tests = [[0,0],[-1,0],[2,0],[-1,-2],[2,1]];
+                    tests = [[0, 0], [-1, 0], [2, 0], [-1, -2], [2, 1]];
                     break;
                 case 2: // 2 -> R
-                    tests = [[0,0],[1,0],[2,0],[1,2],[-2,-1]];
+                    tests = [[0, 0], [1, 0], [2, 0], [1, 2], [-2, -1]];
                     break;
                 case 1: // R -> 0
-                    tests = [[0,0],[2,0],[-1,0],[2,-1],[-1,2]];
+                    tests = [[0, 0], [2, 0], [-1, 0], [2, -1], [-1, 2]];
                     break;
                 case 3: // L -> 2
-                    tests = [[0,0],[-2,0],[1,0],[-2,1],[1,-2]];
+                    tests = [[0, 0], [-2, 0], [1, 0], [-2, 1], [1, -2]];
                     break;
             }
 
-        for (let i = 0; i < tests.length; i++)
-        {
+        for (let i = 0; i < tests.length; i++) {
             [x_tran, y_tran] = tests[i];
             if (!this.checkRotateShape_CCW(tetrisBlocks, x_tran, y_tran))
                 return [x_tran, y_tran];
         }
         return [null, null];
     }
-    checkWallKicks_CW = function()
-    {
+    checkWallKicks_CW = function () {
         var x_tran, y_tran;
         var tests = [];
         if (this.shape_name != "I")
-            switch(this.spawn)
-            {
+            switch (this.spawn) {
                 case 0: // 0 -> R
-                    tests = [[0,0],[-1,0],[-1,-1],[0,2],[-1,2]];
+                    tests = [[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]];
                     break;
                 case 2: // 2 -> L
-                    tests = [[0,0],[1,0],[1,-1],[0,2],[1,2]];
+                    tests = [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]];
                     break;
                 case 1: // R -> 2
-                    tests = [[0,0],[1,0],[-1, 1],[0,-2],[1,-2]];
+                    tests = [[0, 0], [1, 0], [-1, 1], [0, -2], [1, -2]];
                     break;
                 case 3: // L -> 0
-                    tests = [[0,0],[-1,0],[-1,1],[0,-2],[-1,-2]];
+                    tests = [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]];
                     break;
             }
         else
-            switch(this.spawn)
-            {
+            switch (this.spawn) {
                 case 0: // 0 -> R
-                    tests = [[0,0],[-2,0],[1,0],[-2,1],[1,-2]];
+                    tests = [[0, 0], [-2, 0], [1, 0], [-2, 1], [1, -2]];
                     break;
                 case 2: // 2 -> L
-                    tests = [[0,0],[2,0],[-1,0],[2,-1],[-1,2]];
+                    tests = [[0, 0], [2, 0], [-1, 0], [2, -1], [-1, 2]];
                     break;
                 case 1: // R -> 2
-                    tests = [[0,0],[-1,0],[2, 0],[-1,-2],[2,1]];
+                    tests = [[0, 0], [-1, 0], [2, 0], [-1, -2], [2, 1]];
                     break;
                 case 3: // L -> 0
-                    tests = [[0,0],[1,0],[-2,0],[1,2],[-2,-1]];
+                    tests = [[0, 0], [1, 0], [-2, 0], [1, 2], [-2, -1]];
                     break;
             }
-        for (let i = 0; i < tests.length; i++)
-        {
+        for (let i = 0; i < tests.length; i++) {
             [x_tran, y_tran] = tests[i];
             if (!this.checkRotateShape_CW(tetrisBlocks, x_tran, y_tran))
                 return [x_tran, y_tran];
@@ -957,12 +911,12 @@ function checkLines(tetrisBlocks) {
 }
 function rainDown(tetrisBlocks) {
     for (let i = 0; i < 4; i++) {
-        for (let height = canvas.height - 2*brickWidth; height > 0; height -= brickHeight) {
+        for (let height = canvas.height - 2 * brickWidth; height > 0; height -= brickHeight) {
 
             if (tetrisBlocks[height] != undefined && tetrisBlocks[height + brickHeight] == undefined) {
                 tetrisBlocks[height + brickHeight] = tetrisBlocks[height];
                 for (var xs in tetrisBlocks[height + brickHeight]) {
-                    
+
                     tetrisBlocks[height + brickHeight][xs].y += brickHeight;
                 }
                 delete tetrisBlocks[height];
@@ -971,10 +925,8 @@ function rainDown(tetrisBlocks) {
     }
     return tetrisBlocks
 }
-function scoreClear(clearedLines)
-{
-    switch(clearedLines)
-    {
+function scoreClear(clearedLines) {
+    switch (clearedLines) {
         case 1:
             score += 100;
             break;
@@ -1058,12 +1010,9 @@ function sound(src, loopMe) {
     }
 }
 
-
 var MyMusic = new sound("./resources/Tetris.mp3", true);
 var lineClear = new sound("./resources/clear.mp3", false);
 var clearFour = new sound("./resources/clear4.mp3", false);
-// MyMusic.play();
-
 
 var dropSpeed = 0;
 var score = 0;
@@ -1071,6 +1020,7 @@ var level;
 function drawGame(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
+
     var clearedLines = 0;
     if (selectedShape == null) // If there is no new shape, create one
     {
@@ -1090,19 +1040,19 @@ function drawGame(timestamp) {
             clearedLines = checkLines(tetrisBlocks); // Clear the full rows
             tetrisBlocks = rainDown(tetrisBlocks);  // Count the rows cleared
 
-            if (clearedLines > 0 && clearedLines < 4)
-            {
+            if (clearedLines > 0 && clearedLines < 4) {
                 lineClear.play();
             }
-            else if (clearedLines == 4)
-            {
+            else if (clearedLines == 4) {
                 clearFour.play();
             }
 
 
             clearedLines = scoreClear(clearedLines);
-            if (selectedShape.checkDead())
-                alert("GG");
+            if (selectedShape.checkDead()) {
+                alert(`Great Job! You got ${score}`);
+                location.reload();
+            }
 
             selectedShape = null; // Reset it
             oneTurn = 0;
@@ -1117,11 +1067,11 @@ function drawGame(timestamp) {
 
     xPressed = false;
     cPressed = false;
-    
+
     var displayScore = document.getElementById("score");
     displayScore.textContent = score;
 
-    setTimeout(function(){window.requestAnimationFrame(drawGame)}, Math.max(0, Math.min(50, 50+level)));
+    setTimeout(function () { window.requestAnimationFrame(drawGame) }, Math.max(0, Math.min(50, 50 + level)));
 }
 
-window.requestAnimationFrame(drawGame);
+play = () => { MyMusic.play(); window.requestAnimationFrame(drawGame); document.getElementById("start").style.display = "none"; };

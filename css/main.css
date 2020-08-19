@@ -1,40 +1,54 @@
-body
-{
-    background-image: url("../resources/background.jpg");
-    background-size: cover;
+body {
+  background-image: url("../resources/background.jpg");
+  background-size: cover;
 }
 
-canvas 
-{
-    background: #343538;
-    border: solid black 2px;
-    margin-left:5vw; 
-    width: 17vw;
+canvas {
+  background: #343538;
+  border: solid black 2px;
+  margin-left: 5vw;
+  width: 17vw;
 }
 
-.container
-{
-    margin-top: 10vh;
-    display:flex;
-    justify-content: center;
+.container {
+  margin-top: 10vh;
+  display: flex;
+  justify-content: center;
 }
 
-
-
-.score
-{
-    margin-left: 5vw;
+.score {
+  margin-left: 5vw;
 }
 
-.score h2
-{
-    font-size: 5vh;
-    text-decoration: underline;
-    color:white;
+.score h2 {
+  font-size: 5vh;
+  text-decoration: underline;
+  color: white;
 }
 
-#score
-{
-    font-size:4vh;
-    color:white;
+#score {
+  font-size: 4vh;
+  color: white;
+}
+
+#start {
+  height: 5vh;
+  width: 5vw;
+  display: inline-block;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid #ffffff;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: 300;
+  color: #ffffff;
+  text-align: center;
+  transition: all 0.2s;
+  background: transparent;
+}
+
+#start:hover {
+  color: #000000;
+  background-color: #ffffff;
 }
