@@ -1074,4 +1074,4 @@ function drawGame(timestamp) {
     setTimeout(function () { window.requestAnimationFrame(drawGame) }, Math.max(0, Math.min(50, 50 + level)));
 }
 
-play = () => { MyMusic.play(); window.requestAnimationFrame(drawGame); document.getElementById("start").style.display = "none"; };
+play = () => { MyMusic.play(); window.requestAnimationFrame(drawGame); document.getElementById("startup").style.display = "none"; };

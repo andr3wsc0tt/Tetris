@@ -14,6 +14,7 @@ canvas {
   margin-top: 10vh;
   display: flex;
   justify-content: center;
+  position: relative;
 }
 
 .score {
@@ -51,4 +52,18 @@ canvas {
 #start:hover {
   color: #000000;
   background-color: #ffffff;
+}
+
+.startup {
+  display: grid;
+  grid-template-rows: 75% auto;
+}
+.startup h2 {
+  color: white;
+  font-size: 20px;
+}
+
+.buttons {
+  height: 10vh;
+  width: 10vw;
 }

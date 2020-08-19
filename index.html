@@ -13,7 +13,11 @@
   <body>
     <title>Tetris</title>
     <main class="container">
-      <button id="start" onclick="play()">Play</button>
+      <aside id="startup" class="startup">
+        <button id="start" onclick="play()">Play</button>
+        <h2>To Spin</h2>
+        <img id="buttons" class="buttons" src="./resources/buttons.PNG" />
+      </aside>
       <div id="grid-pic">
         <canvas id="Tetris-Canvas"></canvas>
       </div>
